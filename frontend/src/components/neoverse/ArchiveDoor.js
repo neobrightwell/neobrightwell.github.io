@@ -68,7 +68,7 @@ export const ArchiveDoor = ({ album, index = 0 }) => {
           </span>
         </div>
       </div>
-      <div className="absolute right-5 bottom-5 text-[rgba(199,168,106,0.18)] group-hover:text-[rgba(199,168,106,0.55)] transition-colors">
+      <div className="absolute right-5 top-5 text-[rgba(199,168,106,0.25)] group-hover:text-[rgba(199,168,106,0.65)] transition-colors">
         <CrescentGlyph size={36} withStar={false} />
       </div>
     </Link>
