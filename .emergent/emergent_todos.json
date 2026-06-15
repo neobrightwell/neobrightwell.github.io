@@ -1,0 +1,66 @@
+[
+  {
+    "content": "Phase 2: Install libraries (framer-motion, lucide-react, react-intersection-observer, fonts) + setup",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Backend - models, content types, CRUD endpoints, auth, seed",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Backend - Invocation (email signup) endpoint + subscribers",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - design tokens (index.css), global layout, App.js routing",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - AtmosphereLayer, ThresholdHero, Threshold homepage",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Archive index + 4 immersive album rooms (distinct atmospheres)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - IntegratedAudioPlayer (radio/tape artifact aesthetic)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Library (index + reader) with sacred reading UX",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Symbols (constellation grid + symbol detail page)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Roadhouse (news/events/press bulletin board)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Observatory (visual art gallery)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - The Invocation form + confirmation state",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Frontend - Admin panel (login + CRUD for all content types)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Seed initial content (4 albums, sample symbols, structural copy)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: Verify build + smoke test + screenshot",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 2: End-to-end testing via testing_agent_v3",
+    "status": "in_progress"
+  }
+]
