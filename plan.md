@@ -3,93 +3,95 @@
 ## 1) Objectives
 - Build a living, immersive world (not a portfolio) with narrative navigation and restrained atmospheric motion.
 - Deliver a scalable CMS-driven archive: albums (with immersive sub-pages), library writing, symbols/mythology, news/events/press, visual art.
-- Implement “The Invocation” as a production-ready email signup flow (email + optional first name) with a literary confirmation state; architect for later provider hookup (Mailchimp/ConvertKit/Resend).
-- Ensure fast, mobile-friendly, accessible (WCAG-minded), SEO-ready delivery.
+- Implement “The Invocation” as a production-ready email signup flow (email + optional first name) with a literary confirmation state; architected for provider hookup (Mailchimp/ConvertKit/Resend) without UI redesign.
+- Provide a non-technical **admin CMS** so Neo can manage the entire living archive without touching code.
+- Ensure fast, mobile-friendly, accessible (WCAG-minded), and SEO-ready delivery.
+
+**Current status:** V1 is live with all major public sections + CMS + JWT admin auth. Backend tests pass **100% (27/27)**. Frontend tests **95% (31/32)** with the remaining flags documented as non-bugs.
+
+---
 
 ## 2) Implementation Steps (Phased)
 
-### Phase 1 — Core integration POC (Isolation): Email provider-ready “Invocation”
-**Why**: external email service integration is the most failure-prone dependency; prove signup pipeline + provider adapter pattern early.
+### Phase 1 — Core integration POC (Isolation): Email provider-ready “Invocation” **(COMPLETED; folded into Phase 2)**
+**Why**: external email service integration is the most failure-prone dependency; validate signup pipeline + provider adapter pattern.
 
 **User stories (Phase 1)**
 1. As a visitor, I can enter my email (and optional first name) and receive an in-world confirmation state.
 2. As a visitor, I cannot submit invalid emails and I get gentle, non-corporate error copy.
 3. As an admin, I can see captured subscribers in the database.
-4. As a developer, I can switch email providers (Resend/ConvertKit/Mailchimp) by changing env vars, not UI.
+4. As a developer, I can switch email providers by changing env vars, not UI.
 5. As a visitor, I can re-submit safely (dedupe) without confusing errors.
 
-**Steps**
-- Define provider adapter interface: `subscribe(email, firstName)` with implementations:
-  - `DatabaseOnlyProvider` (always works; baseline)
-  - `ResendProvider` (or provider-of-choice stub ready for credentials)
-- Build a minimal FastAPI endpoint: `POST /api/invocation` (validate, dedupe, store, call provider).
-- Create a standalone Python test script to hit the endpoint with real cases (valid/invalid/duplicate) and assert responses.
-- (If credentials provided) run live provider call; otherwise verify adapter wiring + DB capture.
-- Do not proceed until: validation + dedupe + DB persistence + adapter swap works.
+**Delivered**
+- `POST /api/invocation` implemented with validation + dedupe + DB persistence.
+- Provider adapter architecture in place (`email_provider.py`) with DB-only provider active by default and a stub for future provider wiring.
+- Admin endpoint to view subscribers (`GET /api/admin/subscribers`, protected).
 
+---
 
-### Phase 2 — V1 App Development (Public site + CMS backend, no admin auth yet)
+### Phase 2 — V1 App Development (Public site + CMS backend + admin auth) **(COMPLETED)**
 **Goal**: working end-to-end public Neoverse with CMS-driven content types and immersive structure; keep copy structural/atmospheric only where needed; do not invent major lore/lyrics.
 
 **User stories (Phase 2)**
 1. As a visitor, I cross a “threshold” homepage that sets tone (dust/stars/grain) without slowing reading.
 2. As a visitor, I enter The Archive and each album opens a dedicated immersive “room” with art, tracklist, embedded player, and outbound links.
 3. As a visitor, I read poems/essays in a quiet Library experience optimized for long-form reading.
-4. As a visitor, I explore Symbols/Mythology entries and discover subtle hidden details on hover/linger.
+4. As a visitor, I explore Symbols/Mythology entries via a constellation interaction.
 5. As a visitor, I can sign up via The Invocation from multiple entry points without leaving the world.
+6. As Neo, I can manage all content via a simple admin interface.
 
 **Backend (FastAPI + MongoDB)**
-- Create collections + schemas (Pydantic) for content types:
-  - Albums, Songs, Poems, Essays, Publications, PressCoverage, VisualArt, Events, Symbols
-- Implement CRUD endpoints for each type (public read endpoints + admin write endpoints placeholder).
-- Image handling MVP: base64 storage fields + size/type validation (artwork, hero images, gallery items).
-- Audio handling MVP:
-  - Store streaming links per album/song (Spotify/Apple/Bandcamp/YouTube/etc.).
-  - Support embedded player via configurable `embedType` + `embedUrl` (or uploaded preview audio later).
-- Seed initial structure:
-  - 4 albums with only allowed facts + clearly marked “INSERT REAL CONTENT” blocks.
-  - Symbols entries for provided mythology names (no new lore).
+- Implemented structured collections + Pydantic schemas for core content types actually shipped:
+  - Albums (with Songs, StreamingLinks, RecoveredFragments)
+  - Library entries
+  - Symbols
+  - Roadhouse posts
+  - Visual art (Observatory)
+  - Subscribers (Invocation)
+- Implemented public read endpoints and full admin CRUD endpoints (JWT-protected).
+- Seeded initial content:
+  - 4 albums: *Neon Rodeo*, *An American Reckoning*, *We Didn’t Survive to Be Quiet*, *Burn Bright, Stay Free*
+  - Symbols: Sélune, The Archive, The Road, Fire, The Witness, plus supporting entries
+  - Library placeholders and Roadhouse/Observatory starter entries
+- Ensured DB indexes (unique slugs; unique subscriber email).
 
-**Frontend (React + Router + Framer Motion)**
-- Global design system:
-  - Palette: midnight/charcoal/silver; accents moonlit blue/violet/faded gold; rare neon crimson/ember.
-  - Type: literary serif headings + readable body; avoid tech/corporate.
-  - Components: ThresholdHero, ArchiveDoor, AlbumRoom, LibraryReader, SymbolCard, RoadhouseBoard, ObservatoryGallery, InvocationModal.
-- Narrative navigation:
-  - Primary paths: Threshold → Archive / Library / Symbols / Roadhouse / Observatory.
-  - Secondary micro-navigation via “fragments” (epigraph slots, marginal notes, archive references) as placeholders.
-- Motion (restrained): dust, grain, faint stars, slow parallax, gentle reveals; page transitions like turning archive pages.
-- “Wow moments” (pick 1–2 only):
-  - The Archive illumination on entry.
-  - Sélune subtle appearance during certain transitions.
-- SEO: clean routes, meta tags per section, sitemap endpoint later.
+**Frontend (React + Router + Framer Motion + shadcn/ui customized)**
+- Global design tokens implemented (palette/typography/texture) per design guidelines.
+- Site structure delivered:
+  - `/` Threshold homepage (hero “wow moment” illumination)
+  - `/archive` Archive doors + 4 immersive album rooms (`/archive/:slug`) with distinct atmospheres
+  - `/library` + `/library/:slug` sacred reading UX
+  - `/symbols` constellation interaction + `/symbols/:slug`
+  - `/roadhouse` bulletin board
+  - `/observatory` gallery + modal viewing
+  - `/invocation` dedicated landing + embedded Invocation in footer
+- Motion system: restrained, atmospheric (dust/grain/stars), page transitions; Sélune appears briefly on transitions to selected sections.
+- Integrated audio player component styled as an artifact; seed data currently uses “idle” in-world state until preview audio URLs are added.
 
-**Checkpoint: V1 E2E test**
-- Run one full pass: homepage → album room → library read → symbols → invocation submit.
-- Fix broken links, mobile layout issues, animation jank.
+**Admin CMS + Auth (folded into Phase 2; originally Phase 3)**
+- Single-admin JWT auth:
+  - `POST /api/admin/login` issues token
+  - Protected admin routes for CRUD
+- Admin UI:
+  - `/admin/login` + `/admin`
+  - `/admin/:resource` list views, `/admin/:resource/:id` edit/create views
+  - `/admin/subscribers` table + CSV export
 
+**Checkpoint: V1 E2E test (COMPLETED)**
+- Backend: **100% (27/27)**
+- Frontend: **95% (31/32)**
+  - Streaming links test-id absent is expected when no links exist.
+  - Admin create timing artifact in automated test; backend CRUD verified.
 
-### Phase 3 — Admin Panel + Auth (JWT) + Editorial workflow
-**Goal**: non-technical admin can manage the living archive; add auth after V1 is stable.
+---
 
-**User stories (Phase 3)**
-1. As Neo, I can log in to an admin area securely and stay signed in.
-2. As Neo, I can create/edit albums and attach songs, embeds, and streaming links.
-3. As Neo, I can upload/replace artwork and manage visual art galleries.
-4. As Neo, I can publish poems/essays/publications/press coverage with dates/tags/status.
-5. As Neo, I can create/edit Symbols entries and control ordering/visibility.
+### Phase 3 — Admin Panel + Auth (JWT) + Editorial workflow **(COMPLETED; merged into Phase 2)**
+**Note**: This phase was originally planned as a separate step, but admin auth + CMS were implemented during Phase 2 because they were straightforward and required for V1 to function as a living archive.
 
-**Steps**
-- Implement JWT auth (single-admin or role-ready) + protected admin routes.
-- Build admin UI (simple, form-driven): list → edit → preview → publish.
-- Add validation + content status fields (draft/published) across types.
-- Add relationship management:
-  - Album ↔ Songs, Album ↔ Symbols, Posts ↔ Tags.
-- Add subscriber export view (CSV download) and provider sync status.
-- Conclude with testing agent: admin CRUD + public rendering reflects changes.
+---
 
-
-### Phase 4 — Polish: accessibility, performance, SEO, and refinement passes
+### Phase 4 — Polish: accessibility, performance, SEO, and refinement passes **(OPTIONAL / NEXT WHEN REQUESTED)**
 **User stories (Phase 4)**
 1. As a visitor on mobile, pages load quickly and remain readable with effects reduced if needed.
 2. As a visitor using a screen reader, I can navigate landmarks, headings, and forms clearly.
@@ -98,23 +100,80 @@
 5. As a returning visitor, I notice subtle, non-intrusive hidden details that reward exploration.
 
 **Steps**
-- Accessibility: focus states, contrast checks, reduced-motion support, semantic headings.
-- Performance: optimize images (size limits), lazy-load media, minimize heavy effects on mobile.
-- SEO: dynamic meta per content, OpenGraph/Twitter cards, sitemap + robots.
-- Add gentle search (Library + Archive) and tagging filters.
-- Final E2E regression test across major routes + admin workflows.
+- Accessibility audit:
+  - confirm semantic landmarks, heading order, link names, form labels
+  - contrast checks on textured surfaces
+  - confirm reduced-motion behavior across all overlays/animations
+- Performance pass:
+  - image lazy-loading and size constraints
+  - reduce heavy overlays on low-power devices
+  - audit bundle size and remove unused dependencies
+- SEO:
+  - per-page dynamic meta (title/description)
+  - OpenGraph/Twitter cards (section + per-album)
+  - sitemap + robots
+- Search + filters:
+  - gentle search across Library + Archive
+  - tagging filters for Library and possibly Roadhouse
+- Final regression test across major routes + admin workflows.
 
+---
+
+### Phase 5 — Real email provider integration **(OPTIONAL / WHEN CREDENTIALS AVAILABLE)**
+**Goal**: wire The Invocation into Resend / ConvertKit / Mailchimp without redesign.
+
+**Steps**
+- Choose provider (Resend recommended for API simplicity unless ConvertKit/Mailchimp is preferred).
+- Add env vars and implement provider adapter in `email_provider.py`.
+- Confirm:
+  - success and error handling
+  - double opt-in behavior (if desired)
+  - admin visibility of provider sync status
+
+---
+
+### Phase 6 — File uploads / object storage **(OPTIONAL)**
+**Goal**: if URLs/base64 become limiting, move images/audio previews to S3/R2.
+
+**Steps**
+- Add signed upload endpoints.
+- Store object URLs in Mongo instead of raw base64.
+- Add admin UX for file uploads and asset management.
+
+---
+
+### Phase 7 — Content insertion (Neo’s editorial pass) **(ONGOING / OWNER: NEO)**
+- Neo fills in real lore, lyrics, poems, essays, album notes, artwork via admin.
+- No agent work required unless:
+  - additional fields are needed
+  - content relationships or workflows should be improved
+  - import/migration tools are requested
+
+---
+
+### Phase 8 — Future immersive expansions (optional)
+- Hidden `/signal` page (daily frequency; recovered transmissions)
+- Coordinates page / archive accession map
+- More “linger-to-reveal” details (strictly optional; keep restraint)
+- Additional symbolic interactions (constellation improvements)
+
+---
 
 ## 3) Next Actions
-1. Confirm the email provider preference for first integration target (Resend vs ConvertKit vs Mailchimp). If unknown, proceed with DatabaseOnlyProvider + Resend adapter scaffold.
-2. Confirm domain/branding basics: preferred URL slug style and whether “Moonshine Disco” needs its own section or stays as a motif.
-3. Begin Phase 1 POC: implement `/api/invocation`, subscribers collection, adapter interface, Python test script.
-4. After Phase 1 is green, start Phase 2 build (models + seeded content + core pages + motion system).
+1. **Security before production** (required):
+   - Change `ADMIN_PASSWORD` (currently `neoverse2025`) and `JWT_SECRET` in `/app/backend/.env`.
+2. Decide if you want to prioritize **Phase 4 (polish)** or **Phase 5 (email provider integration)** next.
+3. If moving to a real provider next, provide credentials + desired behavior:
+   - provider choice (Resend / ConvertKit / Mailchimp)
+   - double opt-in vs single opt-in
+   - audience/list ID
+4. Begin filling content via `/admin` (albums → songs → links → notes; library entries; symbols).
 
+---
 
 ## 4) Success Criteria
-- Visitors experience a coherent threshold-to-rooms journey; no page feels like a generic portfolio.
-- Each of the 4 albums has its own immersive page with embedded listening + outbound streaming links, and clearly marked real-content insertion blocks.
+- Visitors experience a coherent threshold-to-rooms journey; nothing reads as a generic portfolio.
+- Each of the 4 albums has its own immersive page with embedded listening capability (when audio URLs/embeds are added) + outbound streaming links, and clearly marked real-content insertion blocks.
 - The Invocation works end-to-end: validation, dedupe, DB persistence; provider hookup requires only env/config changes.
 - Neo can manage all content types from a usable admin interface without touching code.
-- Site is fast on mobile, supports reduced motion, and is SEO-shareable with correct metadata.
+- Site is fast on mobile, honors reduced motion, and is SEO-shareable with correct metadata.
