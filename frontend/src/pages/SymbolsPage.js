@@ -107,7 +107,25 @@ export default function SymbolsPage() {
                 }`}
               >
                 <span className="relative">
-                  <Glyph size={isActive ? 36 : 28} />
+                  {s.image_url ? (
+                    <img
+                      src={s.image_url}
+                      alt={s.name}
+                      className="object-contain transition-all duration-300"
+                      style={{
+                        width: isActive ? 56 : 42,
+                        height: isActive ? 56 : 42,
+                        filter: [
+                          s.image_filter || "",
+                          isActive
+                            ? "drop-shadow(0 0 18px rgba(199,168,106,0.55)) brightness(1.05)"
+                            : "drop-shadow(0 0 10px rgba(199,168,106,0.20)) opacity(0.88)",
+                        ].filter(Boolean).join(" "),
+                      }}
+                    />
+                  ) : (
+                    <Glyph size={isActive ? 36 : 28} />
+                  )}
                   {isActive && (
                     <span className="absolute -inset-3 rounded-full ring-1 ring-[rgba(199,168,106,0.45)] animate-pulse" />
                   )}
@@ -138,7 +156,21 @@ export default function SymbolsPage() {
               className="group relative overflow-hidden rounded-xl border border-border/70 bg-[hsl(var(--card))] p-5 hover:border-[rgba(199,168,106,0.4)] transition-colors"
             >
               <div className="flex items-center gap-3 mb-3 text-[rgba(199,168,106,0.85)]">
-                <Glyph size={24} />
+                {s.image_url ? (
+                  <img
+                    src={s.image_url}
+                    alt={s.name}
+                    className="h-7 w-7 object-contain"
+                    style={{
+                      filter: [
+                        s.image_filter || "",
+                        "drop-shadow(0 0 8px rgba(199,168,106,0.25))",
+                      ].filter(Boolean).join(" "),
+                    }}
+                  />
+                ) : (
+                  <Glyph size={24} />
+                )}
                 <span className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.6)]">symbol</span>
               </div>
               <h3 className="font-serif text-2xl text-[rgba(231,224,214,0.95)]">{s.name}</h3>

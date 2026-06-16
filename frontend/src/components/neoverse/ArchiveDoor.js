@@ -37,8 +37,19 @@ export const ArchiveDoor = ({ album, index = 0 }) => {
       to={`/archive/${album.slug}`}
       data-testid={`${ARCHIVE.door}-${album.slug}`}
       className="group relative overflow-hidden rounded-2xl border border-border/70 bg-[hsl(var(--card))] p-6 sm:p-7 neo-illuminate transition-transform duration-300 hover:-translate-y-0.5 hover:border-[rgba(199,168,106,0.55)]"
-      style={style}
+      style={{ ...style, minHeight: "260px" }}
     >
+      {album.cover_image_url && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-center opacity-[0.22] group-hover:opacity-[0.34] transition-opacity duration-500"
+          style={{ backgroundImage: `url('${album.cover_image_url}')` }}
+        />
+      )}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-br from-[rgba(11,12,15,0.78)] via-[rgba(11,12,15,0.62)] to-[rgba(11,12,15,0.92)]"
+      />
       <AtmosphereLayer grain dust wash={conf.wash} />
       <div className="relative z-10">
         <div
@@ -50,25 +61,25 @@ export const ArchiveDoor = ({ album, index = 0 }) => {
             {conf.accent}
           </span>
         </div>
-        <h3 className="font-serif text-3xl sm:text-4xl text-[rgba(231,224,214,0.97)] leading-[1.05]">
+        <h3 className="font-serif text-3xl sm:text-4xl text-[rgba(231,224,214,0.97)] leading-[1.05] drop-shadow-[0_2px_12px_rgba(0,0,0,0.55)]">
           {album.title}
         </h3>
         {album.subtitle && (
-          <p className="mt-2 font-serif italic text-[rgba(231,224,214,0.7)] text-base">
+          <p className="mt-2 font-serif italic text-[rgba(231,224,214,0.78)] text-base">
             {album.subtitle}
           </p>
         )}
         <div className="mt-7 flex items-center justify-between">
-          <span className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.55)]">
+          <span className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.6)]">
             {album.year || "—"}
           </span>
-          <span className="flex items-center gap-1 font-mono tracking-archival text-[10px] text-[rgba(199,168,106,0.85)] group-hover:text-[rgba(199,168,106,1)]">
+          <span className="flex items-center gap-1 font-mono tracking-archival text-[10px] text-[rgba(199,168,106,0.92)] group-hover:text-[rgba(199,168,106,1)]">
             Enter the room
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </span>
         </div>
       </div>
-      <div className="absolute right-5 top-5 text-[rgba(199,168,106,0.25)] group-hover:text-[rgba(199,168,106,0.65)] transition-colors">
+      <div className="absolute right-5 top-5 text-[rgba(199,168,106,0.35)] group-hover:text-[rgba(199,168,106,0.75)] transition-colors">
         <CrescentGlyph size={36} withStar={false} />
       </div>
     </Link>

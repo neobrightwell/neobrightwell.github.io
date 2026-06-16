@@ -108,6 +108,8 @@ class SymbolIn(NeoverseBase):
     short_definition: Optional[str] = None
     full_description: Optional[str] = None  # markdown
     glyph_svg: Optional[str] = None  # inline SVG markup
+    image_url: Optional[str] = None  # bitmap glyph URL or data URI (alternative to glyph_svg)
+    image_filter: Optional[str] = None  # optional CSS filter, e.g. "invert(1)" for dark-on-light glyphs
     themes: List[str] = []
     related_works: List[str] = []  # album/library slugs
     status: Literal["draft", "published"] = "published"

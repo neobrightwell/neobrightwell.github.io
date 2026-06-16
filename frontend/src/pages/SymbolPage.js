@@ -81,7 +81,19 @@ export default function SymbolPage() {
           )}
         </div>
         <div className="md:col-span-4 flex justify-center md:justify-end">
-          {sym.glyph_svg ? (
+          {sym.image_url ? (
+            <img
+              src={sym.image_url}
+              alt={sym.name}
+              className="h-36 w-36 object-contain"
+              style={{
+                filter: [
+                  sym.image_filter || "",
+                  "drop-shadow(0 12px 36px rgba(199,168,106,0.18))",
+                ].filter(Boolean).join(" "),
+              }}
+            />
+          ) : sym.glyph_svg ? (
             <div
               className="text-[rgba(199,168,106,0.95)] h-32 w-32"
               // eslint-disable-next-line react/no-danger

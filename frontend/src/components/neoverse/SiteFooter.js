@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CrescentGlyph } from "./Glyphs";
+import { BrandMark } from "./BrandMark";
 import { InvocationForm } from "./InvocationForm";
 
 // Deterministic daily 'frequency' — a small hidden detail in the colophon.
@@ -25,9 +26,7 @@ export const SiteFooter = () => {
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6 py-14 grid gap-12 md:grid-cols-12">
         <div className="md:col-span-6">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-[rgba(199,168,106,0.85)]">
-              <CrescentGlyph size={22} />
-            </span>
+            <BrandMark size={28} />
             <span className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">
               The Invocation
             </span>

@@ -153,15 +153,23 @@ export default function HomePage() {
               <Link
                 key={a.id}
                 to={`/archive/${a.slug}`}
-                className="group relative overflow-hidden rounded-xl border border-border/70 bg-[hsl(var(--card))] p-5 hover:border-[rgba(199,168,106,0.45)] transition-colors"
+                className="group relative overflow-hidden rounded-xl border border-border/70 bg-[hsl(var(--card))] p-5 hover:border-[rgba(199,168,106,0.45)] transition-colors min-h-[180px]"
                 style={{ animationDelay: `${i * 90}ms` }}
               >
+                {a.cover_image_url && (
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-cover bg-center opacity-[0.22] group-hover:opacity-[0.36] transition-opacity duration-500"
+                    style={{ backgroundImage: `url('${a.cover_image_url}')` }}
+                  />
+                )}
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-[rgba(11,12,15,0.7)] via-[rgba(11,12,15,0.6)] to-[rgba(11,12,15,0.92)]" />
                 <AtmosphereLayer grain />
                 <div className="relative z-10">
-                  <p className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.5)] mb-3">
+                  <p className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.6)] mb-3">
                     {a.subtitle || "—"}
                   </p>
-                  <h3 className="font-serif text-xl text-[rgba(231,224,214,0.95)] leading-tight">{a.title}</h3>
+                  <h3 className="font-serif text-xl text-[rgba(231,224,214,0.97)] leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)]">{a.title}</h3>
                 </div>
               </Link>
             ))}

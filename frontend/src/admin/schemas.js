@@ -157,6 +157,8 @@ export const SCHEMAS = {
           { name: "full_description", label: "Full description (markdown)", type: "longtext" },
           { name: "themes", label: "Themes", type: "tags" },
           { name: "related_works", label: "Related work slugs", type: "tags" },
+          { name: "image_url", label: "Glyph image (bitmap URL or data URI)", type: "image", hint: "Used when no custom SVG is provided; takes priority over the default line glyph." },
+          { name: "image_filter", label: "Glyph image CSS filter (optional)", type: "text", hint: "e.g. 'invert(1)' for dark lines on light background; 'brightness(1.1) contrast(1.1)' for muted images." },
           { name: "glyph_svg", label: "Custom glyph SVG (optional)", type: "longtext" },
           { name: "status", label: "Status", type: "select", options: statusOpts },
           { name: "sort_order", label: "Sort order", type: "number" },

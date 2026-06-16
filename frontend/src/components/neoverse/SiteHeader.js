@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { NAV } from "@/constants/testIds";
-import { CrescentGlyph } from "./Glyphs";
+import { BrandMark } from "./BrandMark";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const NAV_ITEMS = [
@@ -34,15 +34,13 @@ export const SiteHeader = () => {
           data-testid={NAV.brand}
           className="flex items-center gap-3 group shrink-0"
         >
-          <span className="text-[rgba(199,168,106,0.92)] group-hover:text-[rgba(199,168,106,1)] transition-colors">
-            <CrescentGlyph size={26} />
-          </span>
+          <BrandMark size={38} className="transition-transform duration-300 group-hover:scale-[1.04]" />
           <span className="flex flex-col leading-tight">
             <span className="font-serif text-[20px] tracking-tight text-[rgba(231,224,214,0.95)]">
               Neo Brightwell
             </span>
             <span className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.52)]">
-              The Neoverse
+              Moonshine Disco — The Neoverse
             </span>
           </span>
         </Link>
