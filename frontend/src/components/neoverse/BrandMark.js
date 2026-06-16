@@ -5,7 +5,7 @@ import React from "react";
  * Renders the NB Skull + Disco Globe artifact, with subtle warm glow.
  */
 export const NB_SKULL_URL =
-  "https://customer-assets.emergentagent.com/job_the-archive-3/artifacts/e8pfhrjf_IMG_1488.jpeg";
+  "https://customer-assets.emergentagent.com/job_the-archive-3/artifacts/9q546zz3_IMG_3844.png";
 
 export const BrandMark = ({ size = 32, className = "", glow = true }) => (
   <img
