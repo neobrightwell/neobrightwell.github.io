@@ -159,11 +159,11 @@ export default function HomePage() {
                 {a.cover_image_url && (
                   <div
                     aria-hidden="true"
-                    className="absolute inset-0 bg-cover bg-center opacity-[0.22] group-hover:opacity-[0.36] transition-opacity duration-500"
+                    className="absolute inset-0 bg-cover bg-center opacity-[0.55] group-hover:opacity-[0.78] transition-opacity duration-500"
                     style={{ backgroundImage: `url('${a.cover_image_url}')` }}
                   />
                 )}
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-br from-[rgba(11,12,15,0.7)] via-[rgba(11,12,15,0.6)] to-[rgba(11,12,15,0.92)]" />
+                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[rgba(11,12,15,0.95)] via-[rgba(11,12,15,0.55)] to-[rgba(11,12,15,0.30)]" />
                 <AtmosphereLayer grain />
                 <div className="relative z-10">
                   <p className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.6)] mb-3">

@@ -37,20 +37,20 @@ export const ArchiveDoor = ({ album, index = 0 }) => {
       to={`/archive/${album.slug}`}
       data-testid={`${ARCHIVE.door}-${album.slug}`}
       className="group relative overflow-hidden rounded-2xl border border-border/70 bg-[hsl(var(--card))] p-6 sm:p-7 neo-illuminate transition-transform duration-300 hover:-translate-y-0.5 hover:border-[rgba(199,168,106,0.55)]"
-      style={{ ...style, minHeight: "260px" }}
+      style={{ ...style, minHeight: "320px" }}
     >
       {album.cover_image_url && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-cover bg-center opacity-[0.22] group-hover:opacity-[0.34] transition-opacity duration-500"
+          className="absolute inset-0 bg-cover bg-center opacity-[0.55] group-hover:opacity-[0.78] transition-opacity duration-500"
           style={{ backgroundImage: `url('${album.cover_image_url}')` }}
         />
       )}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-br from-[rgba(11,12,15,0.78)] via-[rgba(11,12,15,0.62)] to-[rgba(11,12,15,0.92)]"
+        className="absolute inset-0 bg-gradient-to-t from-[rgba(11,12,15,0.94)] via-[rgba(11,12,15,0.55)] to-[rgba(11,12,15,0.35)]"
       />
-      <AtmosphereLayer grain dust wash={conf.wash} />
+      <AtmosphereLayer grain wash={conf.wash} />
       <div className="relative z-10">
         <div
           className="flex items-center gap-2 mb-5"
