@@ -2,9 +2,15 @@
 
 Single-admin pattern: a shared ADMIN_PASSWORD (env var) issues a signed JWT.
 No user registration. Suitable for a personal living-archive site.
+
+IMPORTANT: All env vars are read at CALL time (not at module import time).
+This means rotating ADMIN_PASSWORD / JWT_SECRET in .env and restarting the
+backend always takes effect — even though auth.py is imported before
+server.py calls load_dotenv().
 """
 from __future__ import annotations
 
+import hmac
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -13,33 +19,49 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "neoverse2025")
-JWT_SECRET = os.environ.get("JWT_SECRET", "neoverse-archive-secret-change-me")
 JWT_ALG = "HS256"
-JWT_TTL_SECONDS = int(os.environ.get("JWT_TTL_SECONDS", "86400"))  # 24h default
+
+_DEFAULT_ADMIN_PASSWORD = "neoverse2025"  # only used if env is missing
+_DEFAULT_JWT_SECRET = "neoverse-archive-secret-change-me"
+
+
+def _admin_password() -> str:
+    return os.environ.get("ADMIN_PASSWORD", _DEFAULT_ADMIN_PASSWORD)
+
+
+def _jwt_secret() -> str:
+    return os.environ.get("JWT_SECRET", _DEFAULT_JWT_SECRET)
+
+
+def _jwt_ttl_seconds() -> int:
+    return int(os.environ.get("JWT_TTL_SECONDS", "86400"))
+
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def verify_admin_password(password: str) -> bool:
-    return password == ADMIN_PASSWORD
+    # Constant-time comparison to resist timing side-channel attacks.
+    return hmac.compare_digest((password or "").encode("utf-8"),
+                               _admin_password().encode("utf-8"))
 
 
 def create_admin_token() -> tuple[str, int]:
+    ttl = _jwt_ttl_seconds()
     now = datetime.now(timezone.utc)
     payload = {
         "sub": "admin",
         "role": "admin",
         "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(seconds=JWT_TTL_SECONDS)).timestamp()),
+        "exp": int((now + timedelta(seconds=ttl)).timestamp()),
     }
-    token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALG)
-    return token, JWT_TTL_SECONDS
+    token = jwt.encode(payload, _jwt_secret(), algorithm=JWT_ALG)
+    return token, ttl
 
 
 def decode_token(token: str) -> dict:
     try:
-        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG])
+        return jwt.decode(token, _jwt_secret(), algorithms=[JWT_ALG])
     except jwt.ExpiredSignatureError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired"
