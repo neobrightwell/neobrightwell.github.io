@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { AdminImageField } from "./AdminImageField";
 
 const INPUT_CLASS = "bg-[rgba(20,22,27,0.6)] border-[rgba(199,194,184,0.18)]";
 
@@ -56,21 +57,8 @@ const RENDERERS = {
       />
     );
   },
-  image: ({ value, onChange }) => (
-    <div className="space-y-2">
-      <Input
-        type="text"
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="https://… or data:image/…"
-        className={INPUT_CLASS}
-      />
-      {value && (
-        <div className="max-w-[220px] rounded-md border border-[rgba(199,194,184,0.18)] overflow-hidden">
-          <img src={value} alt="" className="w-full h-auto" />
-        </div>
-      )}
-    </div>
+  image: ({ field, value, onChange }) => (
+    <AdminImageField value={value} onChange={onChange} hint={field.hint} />
   ),
   text: ({ value, onChange }) => (
     <Input type="text" value={value || ""} onChange={(e) => onChange(e.target.value)} className={INPUT_CLASS} />
