@@ -97,7 +97,7 @@ export default function LibraryEntryPage() {
           </p>
           <ul className="space-y-2">
             {entry.marginal_notes.map((n, i) => (
-              <li key={i} className="font-serif italic text-[rgba(231,224,214,0.78)]">
+              <li key={`${n.slice(0, 40)}-${i}`} className="font-serif italic text-[rgba(231,224,214,0.78)]">
                 — {n}
               </li>
             ))}

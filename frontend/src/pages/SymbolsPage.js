@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchSymbols } from "@/api/client";
 import { SYMBOLS } from "@/constants/testIds";
@@ -31,7 +31,10 @@ export default function SymbolsPage() {
     fetchSymbols().then(setSymbols).catch(() => setSymbols([]));
   }, []);
 
-  const positions = (symbols || []).map((s, i) => ({ ...s, pos: posFor(s.slug, i) }));
+  const positions = useMemo(
+    () => (symbols || []).map((s, i) => ({ ...s, pos: posFor(s.slug, i) })),
+    [symbols]
+  );
   const center = hovered ? positions.find((s) => s.slug === hovered) : null;
 
   return (

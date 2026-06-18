@@ -18,9 +18,17 @@ export default function HomePage() {
   const [latest, setLatest] = useState([]);
   const [albums, setAlbums] = useState([]);
 
+  // Imports `fetchAlbums` and `fetchRoadhouse` are stable module references,
+  // so this effectively runs once on mount.
   useEffect(() => {
-    fetchAlbums().then((d) => setAlbums((d || []).slice(0, 4))).catch(() => {});
-    fetchRoadhouse().then((d) => setLatest((d || []).slice(0, 3))).catch(() => {});
+    let cancelled = false;
+    fetchAlbums()
+      .then((d) => { if (!cancelled) setAlbums((d || []).slice(0, 4)); })
+      .catch(() => {});
+    fetchRoadhouse()
+      .then((d) => { if (!cancelled) setLatest((d || []).slice(0, 3)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   return (

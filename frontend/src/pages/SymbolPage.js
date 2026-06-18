@@ -5,6 +5,7 @@ import { fetchSymbol } from "@/api/client";
 import { SYMBOLS } from "@/constants/testIds";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CrescentGlyph, EyeGlyph, ThresholdGlyph } from "@/components/neoverse/Glyphs";
+import { sanitizeSvg } from "@/lib/sanitize";
 
 const NOTE_MARK = "[ insert real content via admin";
 const isPlaceholder = (s) => typeof s === "string" && s.trim().startsWith(NOTE_MARK);
@@ -25,7 +26,6 @@ export default function SymbolPage() {
     setErr(false);
     fetchSymbol(slug).then(setSym).catch(() => setErr(true));
   }, [slug]);
-
   if (err) {
     return (
       <div className="mx-auto max-w-[720px] px-6 pt-24 pb-24 text-center">
@@ -96,8 +96,9 @@ export default function SymbolPage() {
           ) : sym.glyph_svg ? (
             <div
               className="text-[rgba(199,168,106,0.95)] h-32 w-32"
+              // Sanitized via DOMPurify with an SVG-only allowlist.
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: sym.glyph_svg }}
+              dangerouslySetInnerHTML={{ __html: sanitizeSvg(sym.glyph_svg) }}
             />
           ) : (
             <span className="text-[rgba(199,168,106,0.85)]">

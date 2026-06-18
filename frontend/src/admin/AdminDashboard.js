@@ -23,7 +23,9 @@ const Stat = ({ label, value, to }) => (
 export default function AdminDashboard() {
   const [stats, setStats] = useState({});
 
+  // Single fetch on mount — all fetch fns are stable module imports.
   useEffect(() => {
+    let cancelled = false;
     const safe = (p) => p.then((r) => r.length).catch(() => 0);
     Promise.all([
       safe(fetchAlbums()),
@@ -32,9 +34,11 @@ export default function AdminDashboard() {
       safe(fetchRoadhouse({ status: "all" })),
       safe(fetchObservatory()),
       safe(adminListSubscribers()),
-    ]).then(([albums, library, symbols, roadhouse, observatory, subs]) =>
-      setStats({ albums, library, symbols, roadhouse, observatory, subs })
-    );
+    ]).then(([albums, library, symbols, roadhouse, observatory, subs]) => {
+      if (cancelled) return;
+      setStats({ albums, library, symbols, roadhouse, observatory, subs });
+    });
+    return () => { cancelled = true; };
   }, []);
 
   return (

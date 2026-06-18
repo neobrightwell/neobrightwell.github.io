@@ -16,10 +16,12 @@ def _scrub(value: Any) -> Any:
 
 
 def serialize_doc(doc: Dict[str, Any] | None) -> Dict[str, Any] | None:
+    # PEP 8: comparisons to singletons (None) MUST use `is` / `is not`, not `==`.
     if doc is None:
         return None
     return _scrub(doc)
 
 
 def serialize_docs(docs: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    # `is not None` is intentional here (PEP 8 §Programming Recommendations).
     return [serialize_doc(d) for d in docs if d is not None]

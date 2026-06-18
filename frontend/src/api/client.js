@@ -8,11 +8,15 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// Admin JWT lives in sessionStorage (not localStorage) so it is scoped to the
+// current browser tab and cleared on close. This shrinks the XSS blast radius
+// versus localStorage while keeping the SPA flow simple. For a fully hardened
+// setup, swap to an httpOnly cookie issued by /api/admin/login.
 const TOKEN_KEY = "neoverse_admin_token";
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY);
-export const setToken = (t) => localStorage.setItem(TOKEN_KEY, t);
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
+export const setToken = (t) => sessionStorage.setItem(TOKEN_KEY, t);
+export const clearToken = () => sessionStorage.removeItem(TOKEN_KEY);
 
 api.interceptors.request.use((config) => {
   const token = getToken();

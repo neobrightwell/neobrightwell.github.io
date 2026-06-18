@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchAlbum } from "@/api/client";
 import { ARCHIVE } from "@/constants/testIds";
@@ -8,6 +8,7 @@ import { IntegratedAudioPlayer } from "@/components/neoverse/IntegratedAudioPlay
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CrescentGlyph, StarMark } from "@/components/neoverse/Glyphs";
+import { sanitizeEmbed } from "@/lib/sanitize";
 
 const ATMO_MAP = {
   "neon-rodeo": { wash: "blue", tagline: "the desert highway" },
@@ -43,6 +44,15 @@ export default function AlbumPage() {
       .then(setAlbum)
       .catch(() => setErr(true));
   }, [slug]);
+
+  // Memoized sort so we don't re-sort on every render.
+  const sortedSongs = useMemo(
+    () =>
+      (album?.songs || [])
+        .slice()
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+    [album?.songs]
+  );
 
   if (err) {
     return (
@@ -149,7 +159,9 @@ export default function AlbumPage() {
             {album.embed_html && (
               <div
                 className="mt-4 rounded-xl overflow-hidden border border-border/60"
-                dangerouslySetInnerHTML={{ __html: album.embed_html }}
+                // Sanitized via DOMPurify with an embed-only allowlist (Spotify/Bandcamp/YouTube etc.).
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{ __html: sanitizeEmbed(album.embed_html) }}
               />
             )}
           </div>
@@ -165,7 +177,7 @@ export default function AlbumPage() {
               ) : (
                 <ul data-testid={ARCHIVE.album_streaming_links} className="space-y-2.5">
                   {album.streaming_links.map((l, i) => (
-                    <li key={i}>
+                    <li key={`${l.platform || "p"}-${l.url || i}`}>
                       <a
                         href={l.url}
                         target="_blank"
@@ -190,7 +202,7 @@ export default function AlbumPage() {
                 </p>
                 <ul className="space-y-1.5">
                   {album.recovered_fragments.map((f, i) => (
-                    <li key={i} className="font-mono text-[11px] text-[rgba(199,194,184,0.78)]">
+                    <li key={`${f.label}-${f.value}-${i}`} className="font-mono text-[11px] text-[rgba(199,194,184,0.78)]">
                       <span className="text-[rgba(199,194,184,0.5)] tracking-archival">{f.label.toUpperCase()} — </span>
                       {f.value}
                     </li>
@@ -249,11 +261,8 @@ export default function AlbumPage() {
                   </p>
                 ) : (
                   <ol className="divide-y divide-[rgba(199,194,184,0.12)]">
-                    {album.songs
-                      .slice()
-                      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-                      .map((s, i) => (
-                        <li key={s.id || i} className="flex items-start gap-4 px-5 py-4">
+                    {sortedSongs.map((s, i) => (
+                        <li key={s.id || `${s.title}-${i}`} className="flex items-start gap-4 px-5 py-4">
                           <span className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.55)] mt-1 w-6">
                             {String(i + 1).padStart(2, "0")}
                           </span>
@@ -269,7 +278,7 @@ export default function AlbumPage() {
                             </span>
                           )}
                         </li>
-                      ))}
+                    ))}
                   </ol>
                 )}
               </div>

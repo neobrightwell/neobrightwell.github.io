@@ -82,7 +82,10 @@ export const INVOCATION = {
 export const ADMIN = {
   shell: "admin-shell",
   login_form: "admin-login-form",
-  login_password: "admin-login-password-input",
+  // NOTE: `login_password` is a data-testid for the password INPUT field,
+  // not a credential. Linters sometimes flag this — keeping the name for
+  // clarity because the testing agent already targets `admin-login-password-input`.
+  login_password: "admin-login-password-input",  // noqa: secret-scan
   login_submit: "admin-login-submit-button",
   logout: "admin-logout-button",
   nav_albums: "admin-nav-albums",
