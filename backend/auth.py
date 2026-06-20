@@ -21,16 +21,27 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 JWT_ALG = "HS256"
 
-_DEFAULT_ADMIN_PASSWORD = "neoverse2025"  # only used if env is missing
-_DEFAULT_JWT_SECRET = "neoverse-archive-secret-change-me"
-
 
 def _admin_password() -> str:
-    return os.environ.get("ADMIN_PASSWORD", _DEFAULT_ADMIN_PASSWORD)
+    # Fail fast if not configured. We deliberately do NOT ship a hardcoded
+    # fallback so a missing env var can never authenticate anyone.
+    val = os.environ.get("ADMIN_PASSWORD")
+    if not val:
+        raise RuntimeError(
+            "ADMIN_PASSWORD is not set. Configure it in /app/backend/.env "
+            "(see README) before the admin panel can be used."
+        )
+    return val
 
 
 def _jwt_secret() -> str:
-    return os.environ.get("JWT_SECRET", _DEFAULT_JWT_SECRET)
+    val = os.environ.get("JWT_SECRET")
+    if not val:
+        raise RuntimeError(
+            "JWT_SECRET is not set. Configure a long random string in "
+            "/app/backend/.env before issuing admin tokens."
+        )
+    return val
 
 
 def _jwt_ttl_seconds() -> int:
