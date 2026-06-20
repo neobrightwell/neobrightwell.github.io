@@ -60,7 +60,7 @@ export default function SymbolsPage() {
       <section
         data-testid={SYMBOLS.constellation}
         className="relative overflow-hidden rounded-2xl border border-border/70 bg-[hsl(var(--card))]"
-        style={{ height: "min(560px, 70vh)" }}
+        style={{ height: "min(820px, 95vh)", minHeight: "560px" }}
         onMouseLeave={() => setHovered(null)}
       >
         <AtmosphereLayer grain stars vignette wash="archive" />
@@ -133,7 +133,7 @@ export default function SymbolsPage() {
                     <span className="absolute -inset-3 rounded-full ring-1 ring-[rgba(199,168,106,0.45)] animate-pulse" />
                   )}
                 </span>
-                <span className="font-mono tracking-archival text-[9.5px] text-[rgba(231,224,214,0.85)] opacity-80 group-hover:opacity-100">
+                <span className="font-mono tracking-archival text-[9px] sm:text-[9.5px] text-[rgba(231,224,214,0.85)] opacity-80 group-hover:opacity-100 whitespace-nowrap">
                   {s.name}
                 </span>
               </span>

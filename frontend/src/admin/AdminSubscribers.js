@@ -52,8 +52,8 @@ const COLUMNS = [
 
 function SubscribersTable({ subs, loading }) {
   return (
-    <div className="rounded-xl border border-border/70 bg-[hsl(var(--card))] overflow-hidden">
-      <table className="w-full text-sm">
+    <div className="rounded-xl border border-border/70 bg-[hsl(var(--card))] overflow-x-auto">
+      <table className="w-full text-sm min-w-[720px]">
         <thead className="bg-[rgba(231,224,214,0.04)]">
           <tr>
             {COLUMNS.map((c) => (

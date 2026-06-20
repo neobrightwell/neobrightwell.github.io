@@ -15,7 +15,7 @@ const NAV_ITEMS = [
 
 const linkClass = ({ isActive }) =>
   [
-    "font-mono tracking-archival text-[11px] transition-colors",
+    "font-mono tracking-archival text-[11px] transition-colors whitespace-nowrap",
     isActive
       ? "text-[rgba(231,224,214,0.98)]"
       : "text-[rgba(231,224,214,0.55)] hover:text-[rgba(231,224,214,0.92)]",
@@ -45,7 +45,7 @@ export const SiteHeader = () => {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7 mx-auto" aria-label="Primary">
+        <nav className="hidden xl:flex items-center gap-7 mx-auto" aria-label="Primary">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -61,13 +61,13 @@ export const SiteHeader = () => {
         <Link
           to="/invocation"
           data-testid={NAV.link_invocation}
-          className="hidden md:inline-flex items-center gap-2 rounded-md border border-[rgba(199,168,106,0.45)] px-3.5 py-1.5 font-mono tracking-archival text-[10.5px] text-[rgba(231,224,214,0.92)] hover:bg-[rgba(199,168,106,0.08)] transition-colors"
+          className="hidden xl:inline-flex items-center gap-2 rounded-md border border-[rgba(199,168,106,0.45)] px-3.5 py-1.5 font-mono tracking-archival text-[10.5px] text-[rgba(231,224,214,0.92)] hover:bg-[rgba(199,168,106,0.08)] transition-colors"
         >
           The Invocation
         </Link>
 
         {/* Mobile */}
-        <div className="ml-auto md:hidden">
+        <div className="ml-auto xl:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <button

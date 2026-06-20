@@ -59,10 +59,10 @@ export default function LibraryPage() {
         <Tabs
           value={type}
           onValueChange={setType}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto min-w-0"
           data-testid={LIBRARY.filter_tabs}
         >
-          <TabsList className="bg-[hsl(var(--card))] border border-border/70">
+          <TabsList className="bg-[hsl(var(--card))] border border-border/70 flex-wrap h-auto">
             {TYPES.map((t) => (
               <TabsTrigger key={t.value} value={t.value} className="font-mono tracking-archival text-[10.5px]">
                 {t.label}
@@ -76,7 +76,7 @@ export default function LibraryPage() {
           placeholder="search by title or tag…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="sm:w-72 bg-[rgba(20,22,27,0.55)] border-[rgba(199,194,184,0.18)]"
+          className="w-full sm:w-72 bg-[rgba(20,22,27,0.55)] border-[rgba(199,194,184,0.18)]"
         />
       </div>
 

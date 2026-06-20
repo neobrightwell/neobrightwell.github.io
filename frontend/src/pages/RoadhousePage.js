@@ -55,7 +55,7 @@ export default function RoadhousePage() {
         </TabsList>
       </Tabs>
 
-      <section data-testid={ROADHOUSE.board} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <section data-testid={ROADHOUSE.board} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-2 -mx-2 overflow-hidden">
         {filtered === null && [0, 1, 2, 3, 4, 5].map((i) => (
           <Skeleton key={i} className="h-44 rounded-xl bg-[rgba(231,224,214,0.04)]" />
         ))}
