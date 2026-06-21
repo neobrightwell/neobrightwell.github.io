@@ -23,6 +23,29 @@ export const PORTALS = [
 const HERO_BG =
   "url('https://images.unsplash.com/photo-1605571925268-bd3129e7df97?crop=entropy&cs=srgb&fm=jpg&q=85&w=2400')";
 
+export function ThresholdBio() {
+  return (
+    <section className="mx-auto max-w-[720px] px-4 sm:px-6 mt-20 sm:mt-28">
+      <div className="space-y-5 font-serif text-[rgba(231,224,214,0.88)] text-lg sm:text-xl leading-[1.75]">
+        <p>Neo Brightwell is an American singer-songwriter and poet.</p>
+        <p>
+          He writes from the borderlands between memory and myth, building songs,
+          poems, records, and artifacts that inhabit a shared universe known as
+          the Neoverse.
+        </p>
+        <p>
+          His work is concerned with witness, survival, inheritance, and the
+          strange ways people continue carrying what history fails to record.
+        </p>
+        <p>He lives in Philadelphia.</p>
+        <p className="italic text-[rgba(199,168,106,0.92)] pt-1">
+          The rest is in the archive.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function ThresholdHero() {
   return (
     <section className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-10 sm:pt-14 lg:pt-20">

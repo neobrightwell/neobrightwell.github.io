@@ -3,6 +3,7 @@ import { InvocationForm } from "@/components/neoverse/InvocationForm";
 import { fetchAlbums, fetchRoadhouse } from "@/api/client";
 import {
   ThresholdHero,
+  ThresholdBio,
   PortalsSection,
   AlbumsStrip,
   RoadhouseStrip,
@@ -28,6 +29,7 @@ export default function HomePage() {
   return (
     <div className="relative">
       <ThresholdHero />
+      <ThresholdBio />
       <PortalsSection />
       <AlbumsStrip albums={albums} />
       <RoadhouseStrip posts={latest} />
