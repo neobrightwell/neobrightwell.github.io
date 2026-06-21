@@ -27,7 +27,10 @@ export function ThresholdBio() {
   return (
     <section className="mx-auto max-w-[720px] px-4 sm:px-6 mt-20 sm:mt-28">
       <div className="space-y-5 font-serif text-[rgba(231,224,214,0.88)] text-lg sm:text-xl leading-[1.75]">
-        <p>Neo Brightwell is an American singer-songwriter and poet.</p>
+        <p>
+          Neo Brightwell is an American singer-songwriter, outlaw poet, producer,
+          and originator of Moonshine Disco.
+        </p>
         <p>
           He writes from the borderlands between memory and myth, building songs,
           poems, records, and artifacts that inhabit a shared universe known as
