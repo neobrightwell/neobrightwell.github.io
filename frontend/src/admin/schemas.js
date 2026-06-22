@@ -189,6 +189,7 @@ export const SCHEMAS = {
               { value: "event", label: "Event / Show" },
               { value: "release", label: "Release" },
               { value: "press", label: "Press" },
+              { value: "field_note", label: "Field Note" },
             ],
           },
           { name: "event_date", label: "Date (ISO)", type: "text", hint: "YYYY-MM-DD" },

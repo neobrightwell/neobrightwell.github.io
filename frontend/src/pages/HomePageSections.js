@@ -180,9 +180,21 @@ export function RoadhouseStrip({ posts }) {
         {posts.map((p) => (
           <div key={p.id} className="relative rounded-xl border border-border/70 bg-[hsl(var(--card))] p-5">
             <span className="neo-pin" aria-hidden="true" />
-            <p className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.55)] mb-2">{p.type}</p>
+            <p className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.55)] mb-2">
+              {p.type === "field_note" ? "field note" : p.type}
+            </p>
             <h3 className="font-serif text-xl text-[rgba(231,224,214,0.95)] leading-tight">{p.title}</h3>
-            {p.excerpt && <p className="mt-2 text-sm text-[rgba(231,224,214,0.7)] leading-relaxed">{p.excerpt}</p>}
+            {p.excerpt && (
+              <p
+                className={
+                  p.type === "field_note"
+                    ? "mt-2 font-serif italic text-[rgba(231,224,214,0.78)] leading-[1.75] whitespace-pre-line"
+                    : "mt-2 text-sm text-[rgba(231,224,214,0.7)] leading-relaxed"
+                }
+              >
+                {p.excerpt}
+              </p>
+            )}
           </div>
         ))}
       </div>

@@ -10,6 +10,7 @@ const TYPES = [
   { value: "news", label: "News" },
   { value: "event", label: "Shows" },
   { value: "release", label: "Releases" },
+  { value: "field_note", label: "Field Notes" },
   { value: "press", label: "Press" },
 ];
 
@@ -74,7 +75,7 @@ export default function RoadhousePage() {
             <span className="neo-pin" aria-hidden="true" />
             <div className="flex items-center justify-between mb-3">
               <span className="font-mono tracking-archival text-[9.5px] text-[rgba(199,194,184,0.6)]">
-                {p.type}
+                {p.type === "field_note" ? "field note" : p.type}
               </span>
               {p.event_date && (
                 <span className="font-mono text-[10px] text-[rgba(199,194,184,0.55)]">
@@ -91,7 +92,15 @@ export default function RoadhousePage() {
               </p>
             )}
             {p.excerpt && (
-              <p className="mt-3 text-sm text-[rgba(231,224,214,0.72)] leading-relaxed">{p.excerpt}</p>
+              <p
+                className={
+                  p.type === "field_note"
+                    ? "mt-3 font-serif italic text-[rgba(231,224,214,0.82)] leading-[1.75] whitespace-pre-line"
+                    : "mt-3 text-sm text-[rgba(231,224,214,0.72)] leading-relaxed"
+                }
+              >
+                {p.excerpt}
+              </p>
             )}
             {p.link && (
               <a

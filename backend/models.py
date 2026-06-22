@@ -126,7 +126,7 @@ class Symbol(SymbolIn):
 class RoadhousePostIn(NeoverseBase):
     slug: str
     title: str
-    type: Literal["news", "event", "release", "press"] = "news"
+    type: Literal["news", "event", "release", "press", "field_note"] = "news"
     body: Optional[str] = None
     excerpt: Optional[str] = None
     image_url: Optional[str] = None
