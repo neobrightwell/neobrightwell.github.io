@@ -2,12 +2,13 @@
 
 ## 1) Objectives
 - Build a living, immersive world (not a portfolio) with narrative navigation and restrained atmospheric motion.
-- Deliver a scalable CMS-driven archive: albums (with immersive sub-pages), library writing, symbols/mythology, news/events/press, visual art.
-- Implement “The Invocation” as a production-ready email signup flow (email + optional first name) with a literary confirmation state; architected for provider hookup (Mailchimp/ConvertKit/Resend) without UI redesign.
+- Deliver a scalable CMS-driven archive: albums (with immersive sub-pages), library writing, symbols/mythology, Roadhouse dispatches (news/events/press/field notes), and visual art.
+- Ensure Roadhouse content is fully readable end-to-end: **bulletin board → dedicated detail page per dispatch** with optional external link surfaced *inside* the detail view.
+- Implement “The Invocation” as a production-ready email signup flow (email + optional first name) with a literary confirmation state; architected for provider hookup (Resend/Mailchimp/ConvertKit) without UI redesign.
 - Provide a non-technical **admin CMS** so Neo can manage the entire living archive without touching code.
 - Ensure fast, mobile-friendly, accessible (WCAG-minded), and SEO-ready delivery.
 
-**Current status:** V1 is live with all major public sections + CMS + JWT admin auth. Backend tests pass **100% (27/27)**. Frontend tests **95% (31/32)** with the remaining flags documented as non-bugs.
+**Current status:** V1 is live with all major public sections + CMS + JWT admin auth. **Roadhouse detail routing is now implemented and verified** (cards are clickable; `/roadhouse/:slug` pages render correctly).
 
 ---
 
@@ -40,20 +41,17 @@
 4. As a visitor, I explore Symbols/Mythology entries via a constellation interaction.
 5. As a visitor, I can sign up via The Invocation from multiple entry points without leaving the world.
 6. As Neo, I can manage all content via a simple admin interface.
+7. As a visitor, I can read full Roadhouse dispatches via a dedicated URL per entry.
 
 **Backend (FastAPI + MongoDB)**
 - Implemented structured collections + Pydantic schemas for core content types actually shipped:
   - Albums (with Songs, StreamingLinks, RecoveredFragments)
   - Library entries
   - Symbols
-  - Roadhouse posts
+  - Roadhouse posts (including Field Notes)
   - Visual art (Observatory)
   - Subscribers (Invocation)
 - Implemented public read endpoints and full admin CRUD endpoints (JWT-protected).
-- Seeded initial content:
-  - 4 albums: *Neon Rodeo*, *An American Reckoning*, *We Didn’t Survive to Be Quiet*, *Burn Bright, Stay Free*
-  - Symbols: Sélune, The Archive, The Road, Fire, The Witness, plus supporting entries
-  - Library placeholders and Roadhouse/Observatory starter entries
 - Ensured DB indexes (unique slugs; unique subscriber email).
 
 **Frontend (React + Router + Framer Motion + shadcn/ui customized)**
@@ -64,10 +62,23 @@
   - `/library` + `/library/:slug` sacred reading UX
   - `/symbols` constellation interaction + `/symbols/:slug`
   - `/roadhouse` bulletin board
+  - **`/roadhouse/:slug` Roadhouse dispatch detail pages**
   - `/observatory` gallery + modal viewing
   - `/invocation` dedicated landing + embedded Invocation in footer
 - Motion system: restrained, atmospheric (dust/grain/stars), page transitions; Sélune appears briefly on transitions to selected sections.
-- Integrated audio player component styled as an artifact; seed data currently uses “idle” in-world state until preview audio URLs are added.
+- Integrated audio player component styled as an artifact.
+
+**Roadhouse detail experience (COMPLETED)**
+- Implemented and wired `RoadhousePostPage`:
+  - Added route: `/roadhouse/:slug` in `src/App.js`
+  - Added API client: `fetchRoadhousePost(slug)`
+  - Converted Roadhouse bulletin cards to `<Link>` navigation (`RoadhousePage.js`)
+  - Converted homepage “Latest dispatches” strip cards to `<Link>` navigation (`HomePageSections.js`)
+  - External links are no longer launched from cards; they appear on the detail page only (per editorial direction).
+- Verified in preview via screenshot automation:
+  - Clicking a card on `/roadhouse` routes to `/roadhouse/<slug>`
+  - Clicking a card from homepage routes to `/roadhouse/<slug>`
+  - Detail page renders title, type, date (when present), body/excerpt, optional image, back link, and optional external link button.
 
 **Admin CMS + Auth (folded into Phase 2; originally Phase 3)**
 - Single-admin JWT auth:
@@ -78,11 +89,10 @@
   - `/admin/:resource` list views, `/admin/:resource/:id` edit/create views
   - `/admin/subscribers` table + CSV export
 
-**Checkpoint: V1 E2E test (COMPLETED)**
-- Backend: **100% (27/27)**
-- Frontend: **95% (31/32)**
-  - Streaming links test-id absent is expected when no links exist.
-  - Admin create timing artifact in automated test; backend CRUD verified.
+**Checkpoint: V1 E2E test**
+- Backend: previously reported **100% (27/27)**
+- Frontend: previously reported **95% (31/32)** with the remaining flags documented as non-bugs.
+- Additional targeted Roadhouse navigation verification completed (manual automation + screenshots).
 
 ---
 
@@ -110,7 +120,7 @@
   - audit bundle size and remove unused dependencies
 - SEO:
   - per-page dynamic meta (title/description)
-  - OpenGraph/Twitter cards (section + per-album)
+  - OpenGraph/Twitter cards (section + per-album + per-Roadhouse post)
   - sitemap + robots
 - Search + filters:
   - gentle search across Library + Archive
@@ -128,7 +138,7 @@
 - Confirm:
   - success and error handling
   - double opt-in behavior (if desired)
-  - admin visibility of provider sync status
+  - admin visibility of provider sync status (or logging/telemetry)
 
 ---
 
@@ -144,10 +154,8 @@
 
 ### Phase 7 — Content insertion (Neo’s editorial pass) **(ONGOING / OWNER: NEO)**
 - Neo fills in real lore, lyrics, poems, essays, album notes, artwork via admin.
-- No agent work required unless:
-  - additional fields are needed
-  - content relationships or workflows should be improved
-  - import/migration tools are requested
+- Pending known content task:
+  - Add full tracklist (with times) for **“Burn Bright, Stay Free”** once provided.
 
 ---
 
@@ -160,20 +168,20 @@
 ---
 
 ## 3) Next Actions
-1. **Security before production** (required):
-   - Change `ADMIN_PASSWORD` (currently `neoverse2025`) and `JWT_SECRET` in `/app/backend/.env`.
-2. Decide if you want to prioritize **Phase 4 (polish)** or **Phase 5 (email provider integration)** next.
-3. If moving to a real provider next, provide credentials + desired behavior:
+1. **If deploying to production**: ensure you are deploying the latest preview build that includes Roadhouse detail routing.
+2. Provide the tracklist + song durations for **“Burn Bright, Stay Free”** (P1) to add times into the album page.
+3. Decide if you want to prioritize **Phase 4 (polish)** or **Phase 5 (email provider integration)** next.
+4. If moving to a real provider next, provide:
    - provider choice (Resend / ConvertKit / Mailchimp)
    - double opt-in vs single opt-in
-   - audience/list ID
-4. Begin filling content via `/admin` (albums → songs → links → notes; library entries; symbols).
+   - audience/list ID (if applicable)
 
 ---
 
 ## 4) Success Criteria
 - Visitors experience a coherent threshold-to-rooms journey; nothing reads as a generic portfolio.
 - Each of the 4 albums has its own immersive page with embedded listening capability (when audio URLs/embeds are added) + outbound streaming links, and clearly marked real-content insertion blocks.
+- **Roadhouse is fully navigable**: bulletin board cards and homepage strip cards open **internal** detail pages at `/roadhouse/:slug`, and any external link is available from within the post.
 - The Invocation works end-to-end: validation, dedupe, DB persistence; provider hookup requires only env/config changes.
 - Neo can manage all content types from a usable admin interface without touching code.
 - Site is fast on mobile, honors reduced motion, and is SEO-shareable with correct metadata.

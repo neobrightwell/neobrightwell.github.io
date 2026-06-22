@@ -12,6 +12,7 @@ import LibraryEntryPage from "@/pages/LibraryEntryPage";
 import SymbolsPage from "@/pages/SymbolsPage";
 import SymbolPage from "@/pages/SymbolPage";
 import RoadhousePage from "@/pages/RoadhousePage";
+import RoadhousePostPage from "@/pages/RoadhousePostPage";
 import ObservatoryPage from "@/pages/ObservatoryPage";
 import InvocationPage from "@/pages/InvocationPage";
 import NotFoundPage from "@/pages/NotFoundPage";
@@ -45,6 +46,7 @@ function App() {
               <Route path="/symbols" element={<SymbolsPage />} />
               <Route path="/symbols/:slug" element={<SymbolPage />} />
               <Route path="/roadhouse" element={<RoadhousePage />} />
+              <Route path="/roadhouse/:slug" element={<RoadhousePostPage />} />
               <Route path="/observatory" element={<ObservatoryPage />} />
               <Route path="/invocation" element={<InvocationPage />} />
               <Route path="*" element={<NotFoundPage />} />

@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { fetchRoadhouse } from "@/api/client";
 import { ROADHOUSE } from "@/constants/testIds";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -66,10 +67,11 @@ export default function RoadhousePage() {
           </p>
         )}
         {filtered?.map((p, i) => (
-          <article
+          <Link
             key={p.id}
+            to={`/roadhouse/${p.slug}`}
             data-testid={ROADHOUSE.post}
-            className="relative rounded-xl border border-border/70 bg-[hsl(var(--card))] p-6 hover:rotate-0 transition-transform duration-300"
+            className="group relative block rounded-xl border border-border/70 bg-[hsl(var(--card))] p-6 transition-all duration-300 hover:rotate-0 hover:border-[rgba(199,168,106,0.45)] hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(199,168,106,0.6)]"
             style={{ transform: `rotate(${rotations[i % rotations.length]}deg)` }}
           >
             <span className="neo-pin" aria-hidden="true" />
@@ -85,7 +87,9 @@ export default function RoadhousePage() {
                 </span>
               )}
             </div>
-            <h3 className="font-serif text-2xl text-[rgba(231,224,214,0.95)] leading-tight">{p.title}</h3>
+            <h3 className="font-serif text-2xl text-[rgba(231,224,214,0.95)] leading-tight group-hover:text-[rgba(199,168,106,0.95)] transition-colors">
+              {p.title}
+            </h3>
             {p.location && (
               <p className="mt-1 font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.55)]">
                 {p.location}
@@ -95,25 +99,20 @@ export default function RoadhousePage() {
               <p
                 className={
                   p.type === "field_note"
-                    ? "mt-3 font-serif italic text-[rgba(231,224,214,0.82)] leading-[1.75] whitespace-pre-line"
-                    : "mt-3 text-sm text-[rgba(231,224,214,0.72)] leading-relaxed"
+                    ? "mt-3 font-serif italic text-[rgba(231,224,214,0.82)] leading-[1.75] whitespace-pre-line line-clamp-5"
+                    : "mt-3 text-sm text-[rgba(231,224,214,0.72)] leading-relaxed line-clamp-4"
                 }
               >
                 {p.excerpt}
               </p>
             )}
-            {p.link && (
-              <a
-                href={p.link}
-                target="_blank"
-                rel="noreferrer"
-                data-testid={ROADHOUSE.post_open}
-                className="mt-4 inline-flex font-mono tracking-archival text-[10.5px] text-[rgba(199,168,106,0.95)] hover:text-[rgba(199,168,106,1)]"
-              >
-                {p.link_label || "Open"} →
-              </a>
-            )}
-          </article>
+            <span
+              data-testid={ROADHOUSE.post_open}
+              className="mt-4 inline-flex font-mono tracking-archival text-[10.5px] text-[rgba(199,168,106,0.85)] group-hover:text-[rgba(199,168,106,1)]"
+            >
+              Read →
+            </span>
+          </Link>
         ))}
       </section>
     </div>

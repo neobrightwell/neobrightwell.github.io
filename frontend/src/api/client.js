@@ -34,6 +34,7 @@ export const fetchLibraryEntry = (slug) => api.get(`/library/${slug}`).then((r) 
 export const fetchSymbols = () => api.get("/symbols").then((r) => r.data);
 export const fetchSymbol = (slug) => api.get(`/symbols/${slug}`).then((r) => r.data);
 export const fetchRoadhouse = (params = {}) => api.get("/roadhouse", { params }).then((r) => r.data);
+export const fetchRoadhousePost = (slug) => api.get(`/roadhouse/${slug}`).then((r) => r.data);
 export const fetchObservatory = () => api.get("/observatory").then((r) => r.data);
 export const fetchArtwork = (slug) => api.get(`/observatory/${slug}`).then((r) => r.data);
 
