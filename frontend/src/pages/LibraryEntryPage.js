@@ -84,9 +84,9 @@ export default function LibraryEntryPage() {
         )}
       </article>
 
-      {entry.publication_credit && (
+      {entry.first_appearance && (
         <p className="mt-6 font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.55)]">
-          {entry.publication_credit}
+          {entry.first_appearance}
         </p>
       )}
 

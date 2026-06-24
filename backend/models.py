@@ -87,7 +87,7 @@ class LibraryEntryIn(NeoverseBase):
     type: Literal["poem", "essay", "manuscript", "publication"] = "poem"
     body: str = ""  # markdown
     epigraph: Optional[str] = None
-    publication_credit: Optional[str] = None  # "First published in The Sun, 2023"
+    first_appearance: Optional[str] = None  # "First published in The Sun, 2023"
     date_written: Optional[str] = None
     tags: List[str] = []
     marginal_notes: List[str] = []

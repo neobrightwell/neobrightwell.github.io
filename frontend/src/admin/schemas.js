@@ -123,7 +123,7 @@ export const SCHEMAS = {
             ],
           },
           { name: "date_written", label: "Date / season written", type: "text" },
-          { name: "publication_credit", label: "Publication credit", type: "text" },
+          { name: "first_appearance", label: "First appearance", type: "text" },
           { name: "status", label: "Status", type: "select", options: statusOpts },
           { name: "sort_order", label: "Sort order", type: "number" },
         ],
