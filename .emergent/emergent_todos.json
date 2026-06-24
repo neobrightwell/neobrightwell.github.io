@@ -1,66 +1,22 @@
 [
   {
-    "content": "Phase 2: Install libraries + setup",
+    "content": "Backend: add `origin` field to VisualArtIn model",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Backend - models, content types, CRUD endpoints, auth, seed",
+    "content": "Admin schema: add Origin field + relabel Year→Chronology on Observatory form",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Backend - Invocation (email signup) endpoint + subscribers",
+    "content": "Observatory public page: relabel YEAR→CHRONOLOGY, show Origin in modal",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend - design tokens, global layout, App.js routing",
+    "content": "Symbols constellation: implement 3 groupings (Celestial/Wayfaring/Testimony), fix overlapping positions, scope hover lines to same-group only",
     "status": "completed"
   },
   {
-    "content": "Phase 2: Frontend - AtmosphereLayer, ThresholdHero, Threshold homepage",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Archive index + 4 immersive album rooms",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - IntegratedAudioPlayer (radio/tape aesthetic)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Library (index + reader)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Symbols (constellation grid + symbol detail)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Roadhouse (bulletin board)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Observatory (visual art gallery)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - The Invocation form + confirmation state",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Frontend - Admin panel (login + CRUD for all content types)",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Seed initial content",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: Verify build + smoke test + screenshot",
-    "status": "completed"
-  },
-  {
-    "content": "Phase 2: End-to-end testing via testing_agent_v3 (backend 100%, frontend 95%)",
+    "content": "Verify with screenshots + esbuild",
     "status": "completed"
   }
 ]

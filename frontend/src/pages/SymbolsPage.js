@@ -7,20 +7,64 @@ import { AtmosphereLayer } from "@/components/neoverse/AtmosphereLayer";
 import { CrescentGlyph, EyeGlyph, ThresholdGlyph, StarMark } from "@/components/neoverse/Glyphs";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// ---------------------------------------------------------------------
+//  Constellation groupings.
+//  Each group is its own mini-constellation. When a node is hovered,
+//  only lines WITHIN that group are drawn.
+// ---------------------------------------------------------------------
+const CONSTELLATIONS = [
+  {
+    id: "celestial",
+    label: "The Celestial",
+    slugs: ["selune", "crescent-and-star", "the-eye"],
+  },
+  {
+    id: "wayfaring",
+    label: "The Wayfaring",
+    slugs: ["the-road", "liminality-glyph", "the-archive"],
+  },
+  {
+    id: "testimony",
+    label: "The Testimony",
+    slugs: ["the-witness", "fire"],
+  },
+];
+
+// Hand-tuned positions (% of canvas). Each row vertically separated so
+// labels never collide; groups occupy distinct regions of the sky.
+const POSITIONS = {
+  // Celestial — top hemisphere
+  "selune":             { x: 50, y: 18 },
+  "crescent-and-star":  { x: 32, y: 32 },
+  "the-eye":            { x: 64, y: 34 },
+  // Wayfaring — lower-left arc
+  "liminality-glyph":   { x: 22, y: 56 },
+  "the-road":           { x: 16, y: 80 },
+  "the-archive":        { x: 44, y: 78 },
+  // Testimony — right side
+  "the-witness":        { x: 74, y: 56 },
+  "fire":               { x: 82, y: 78 },
+};
+
+const groupForSlug = (slug) =>
+  CONSTELLATIONS.find((g) => g.slugs.includes(slug)) || null;
+
+// Deterministic fallback for any symbol slug that isn't in our hand-tuned
+// layout (e.g., a future symbol added via admin). Lands them in a safe
+// strip along the bottom-center so they don't collide with the known map.
+const fallbackPosition = (slug, idx) => {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) % 9973;
+  const x = 35 + ((h + idx * 11) % 30); // 35..65%
+  const y = 88 + ((h * 3) % 6);          // 88..93%
+  return { x, y };
+};
+
 // pick a default glyph by slug
 const pickGlyph = (slug) => {
   if (slug.includes("eye") || slug.includes("witness")) return EyeGlyph;
   if (slug.includes("liminality") || slug.includes("road") || slug.includes("archive")) return ThresholdGlyph;
   return CrescentGlyph;
-};
-
-// Pseudo-random but deterministic position by slug — nodes scattered as a constellation.
-const posFor = (slug, idx) => {
-  let h = 0;
-  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) % 9973;
-  const x = 8 + ((h * 7) % 80); // 8..88%
-  const y = 12 + ((h * 13 + idx * 17) % 70); // 12..82%
-  return { x, y };
 };
 
 export default function SymbolsPage() {
@@ -31,11 +75,58 @@ export default function SymbolsPage() {
     fetchSymbols().then(setSymbols).catch(() => setSymbols([]));
   }, []);
 
-  const positions = useMemo(
-    () => (symbols || []).map((s, i) => ({ ...s, pos: posFor(s.slug, i) })),
-    [symbols]
-  );
-  const center = hovered ? positions.find((s) => s.slug === hovered) : null;
+  // Decorate symbols with position + group metadata.
+  const placed = useMemo(() => {
+    if (!symbols) return [];
+    return symbols.map((s, i) => {
+      const pos = POSITIONS[s.slug] || fallbackPosition(s.slug, i);
+      const group = groupForSlug(s.slug);
+      return { ...s, pos, groupId: group?.id || null };
+    });
+  }, [symbols]);
+
+  // Group-aware line drawing: when a node is hovered, surface only the
+  // lines connecting nodes in the same constellation.
+  const activeLines = useMemo(() => {
+    if (!hovered) return [];
+    const center = placed.find((s) => s.slug === hovered);
+    if (!center || !center.groupId) return [];
+    const peers = placed.filter(
+      (s) => s.groupId === center.groupId && s.slug !== center.slug
+    );
+    // pairwise connections inside the group (triangle for 3, single line for 2)
+    const groupNodes = placed.filter((s) => s.groupId === center.groupId);
+    const lines = [];
+    for (let i = 0; i < groupNodes.length; i++) {
+      for (let j = i + 1; j < groupNodes.length; j++) {
+        const a = groupNodes[i];
+        const b = groupNodes[j];
+        // emphasis: the edges touching the hovered node are brighter
+        const touchesHovered = a.slug === center.slug || b.slug === center.slug;
+        lines.push({
+          key: `${a.slug}--${b.slug}`,
+          x1: a.pos.x,
+          y1: a.pos.y,
+          x2: b.pos.x,
+          y2: b.pos.y,
+          emphasized: touchesHovered,
+        });
+      }
+    }
+    return lines.length ? lines : peers.map((p) => ({
+      // safety net — shouldn't happen for groups of 2+, but handles singleton groups
+      key: `${center.slug}--${p.slug}`,
+      x1: center.pos.x, y1: center.pos.y,
+      x2: p.pos.x, y2: p.pos.y,
+      emphasized: true,
+    }));
+  }, [hovered, placed]);
+
+  const hoveredGroupId = useMemo(() => {
+    if (!hovered) return null;
+    const center = placed.find((s) => s.slug === hovered);
+    return center?.groupId || null;
+  }, [hovered, placed]);
 
   return (
     <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-20">
@@ -65,23 +156,28 @@ export default function SymbolsPage() {
       >
         <AtmosphereLayer grain stars vignette wash="archive" />
 
-        {/* Constellation lines on hover */}
-        {center && (
-          <svg className="absolute inset-0 w-full h-full" aria-hidden="true">
-            {positions
-              .filter((s) => s.slug !== center.slug)
-              .map((s) => (
-                <line
-                  key={s.slug}
-                  x1={`${center.pos.x}%`}
-                  y1={`${center.pos.y}%`}
-                  x2={`${s.pos.x}%`}
-                  y2={`${s.pos.y}%`}
-                  stroke="rgba(199,168,106,0.32)"
-                  strokeWidth="0.6"
-                  strokeDasharray="2 4"
-                />
-              ))}
+        {/* Constellation lines (within hovered group only) */}
+        {activeLines.length > 0 && (
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            aria-hidden="true"
+          >
+            {activeLines.map((ln) => (
+              <line
+                key={ln.key}
+                x1={`${ln.x1}%`}
+                y1={`${ln.y1}%`}
+                x2={`${ln.x2}%`}
+                y2={`${ln.y2}%`}
+                stroke={
+                  ln.emphasized
+                    ? "rgba(199,168,106,0.55)"
+                    : "rgba(199,168,106,0.28)"
+                }
+                strokeWidth={ln.emphasized ? "0.9" : "0.6"}
+                strokeDasharray="2 4"
+              />
+            ))}
           </svg>
         )}
 
@@ -91,9 +187,11 @@ export default function SymbolsPage() {
           </div>
         )}
 
-        {positions.map((s) => {
+        {placed.map((s) => {
           const Glyph = pickGlyph(s.slug);
           const isActive = hovered === s.slug;
+          const inHoveredGroup = hoveredGroupId && s.groupId === hoveredGroupId;
+          const dim = hoveredGroupId && !inHoveredGroup;
           return (
             <Link
               key={s.slug}
@@ -106,8 +204,13 @@ export default function SymbolsPage() {
             >
               <span
                 className={`flex flex-col items-center gap-2 transition-all duration-300 ${
-                  isActive ? "text-[rgba(199,168,106,1)]" : "text-[rgba(199,168,106,0.6)]"
+                  isActive
+                    ? "text-[rgba(199,168,106,1)]"
+                    : inHoveredGroup
+                    ? "text-[rgba(199,168,106,0.85)]"
+                    : "text-[rgba(199,168,106,0.6)]"
                 }`}
+                style={{ opacity: dim ? 0.35 : 1 }}
               >
                 <span className="relative">
                   {s.image_url ? (
@@ -144,7 +247,9 @@ export default function SymbolsPage() {
         {/* Caption */}
         <div className="absolute left-5 bottom-5 flex items-center gap-2 text-[rgba(199,194,184,0.55)]">
           <StarMark size={10} />
-          <p className="font-mono tracking-archival text-[10px]">Hover a symbol to draw the constellation</p>
+          <p className="font-mono tracking-archival text-[10px]">
+            Three constellations — hover to draw.
+          </p>
         </div>
       </section>
 

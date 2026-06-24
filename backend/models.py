@@ -150,7 +150,8 @@ class VisualArtIn(NeoverseBase):
     title: str
     image_url: str = ""  # URL or data URI
     medium: Optional[str] = None
-    year: Optional[str] = None
+    year: Optional[str] = None       # surfaced in UI as "Chronology"
+    origin: Optional[str] = None     # provenance / place / publication
     description: Optional[str] = None
     symbolism: Optional[str] = None
     status: Literal["draft", "published"] = "published"

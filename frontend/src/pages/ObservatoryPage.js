@@ -87,7 +87,12 @@ export default function ObservatoryPage() {
                     <h2 className="font-serif text-3xl text-[rgba(231,224,214,0.97)] leading-tight">{active.title}</h2>
                     {active.year && (
                       <p className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.55)] mt-1">
-                        YEAR — {active.year}
+                        CHRONOLOGY — {active.year}
+                      </p>
+                    )}
+                    {active.origin && (
+                      <p className="font-mono tracking-archival text-[10px] text-[rgba(199,194,184,0.55)] mt-0.5">
+                        ORIGIN — {active.origin}
                       </p>
                     )}
                     {active.description && (
