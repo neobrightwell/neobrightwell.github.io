@@ -86,6 +86,8 @@ export default function LibraryEntryPage() {
 
       {entry.first_appearance && (
         <p className="mt-6 font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.55)]">
+          <span className="text-[rgba(199,168,106,0.85)]">FIRST APPEARANCE</span>
+          {" — "}
           {entry.first_appearance}
         </p>
       )}
