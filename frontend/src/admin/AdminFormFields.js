@@ -34,6 +34,26 @@ const RENDERERS = {
       className={INPUT_CLASS}
     />
   ),
+  // Nullable decimal field used for constellation coordinates (0-100%).
+  // Empty input maps to null so the public page can fall back to the
+  // default layout map; any typed value (including 0) is saved as a float.
+  position: ({ field, value, onChange }) => (
+    <Input
+      type="number"
+      step="0.1"
+      min="0"
+      max="100"
+      value={value === null || value === undefined ? "" : value}
+      onChange={(e) => {
+        const v = e.target.value;
+        if (v === "") return onChange(null);
+        const n = parseFloat(v);
+        onChange(Number.isFinite(n) ? n : null);
+      }}
+      placeholder={field?.hint?.includes("0") ? "0 – 100" : ""}
+      className={INPUT_CLASS}
+    />
+  ),
   select: ({ field, value, onChange }) => (
     <Select value={value || field.options?.[0]?.value} onValueChange={onChange}>
       <SelectTrigger className={INPUT_CLASS}><SelectValue /></SelectTrigger>

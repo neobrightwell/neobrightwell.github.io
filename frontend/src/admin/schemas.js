@@ -164,6 +164,14 @@ export const SCHEMAS = {
           { name: "sort_order", label: "Sort order", type: "number" },
         ],
       },
+      {
+        title: "Constellation placement",
+        fields: [
+          { name: "pos_x", label: "Position X (%)", type: "position", hint: "0–100 (left to right). Leave blank to use default layout." },
+          { name: "pos_y", label: "Position Y (%)", type: "position", hint: "0–100 (top to bottom). Leave blank to use default layout." },
+          { name: "connects_to", label: "Connects to (symbol slugs)", type: "tags", hint: "Comma-separated slugs of other symbols this one links to (e.g. 'crescent-and-star, the-eye'). Connections are bidirectional. Leave blank to use the default groupings. An empty list means this symbol is a singleton with no connections." },
+        ],
+      },
     ],
   },
 
@@ -242,6 +250,7 @@ export const DEFAULTS_FOR = (resource) => {
       if (f.type === "list") out[f.name] = [];
       else if (f.type === "tags") out[f.name] = [];
       else if (f.type === "number") out[f.name] = 0;
+      else if (f.type === "position") out[f.name] = null;
       else if (f.type === "select") out[f.name] = f.options?.[0]?.value || "";
       else out[f.name] = "";
     }

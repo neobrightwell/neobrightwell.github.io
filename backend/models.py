@@ -112,6 +112,14 @@ class SymbolIn(NeoverseBase):
     image_filter: Optional[str] = None  # optional CSS filter, e.g. "invert(1)" for dark-on-light glyphs
     themes: List[str] = []
     related_works: List[str] = []  # album/library slugs
+    # ---- Constellation configuration (editable from admin) ----
+    # pos_x / pos_y: 0-100 (% of canvas). None = fall back to default layout map.
+    pos_x: Optional[float] = None
+    pos_y: Optional[float] = None
+    # connects_to: list of OTHER symbol slugs this one links to in the constellation.
+    # Bidirectional at render time. None = fall back to default groupings.
+    # [] (empty array) = explicitly a singleton with no connections.
+    connects_to: Optional[List[str]] = None
     status: Literal["draft", "published"] = "published"
     sort_order: int = 0
 
