@@ -49,6 +49,7 @@ const TRANSMISSIONS = [
   { href: "https://neobrightwell.substack.com", label: "Notes from the Neoverse" },
   { href: "https://neobrightwell.bandcamp.com", label: "The Record Room" },
   { href: "https://elasticstage.com/neoverse", label: "The Reliquary" },
+  { href: "https://temple.groover.co/neobrightwell/the-doorway", label: "The Press Room" },
 ];
 
 const SIGNALS = [
