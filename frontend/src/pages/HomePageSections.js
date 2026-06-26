@@ -32,15 +32,9 @@ export function ThresholdBio() {
           and originator of Moonshine Disco.
         </p>
         <p>
-          He writes from the borderlands between memory and myth, building songs,
-          poems, records, and artifacts that inhabit a shared universe known as
-          the Neoverse.
+          Songs, poems, records, and recovered documents from the borderlands between memory and myth.
         </p>
-        <p>
-          His work is concerned with witness, survival, inheritance, and the
-          strange ways people continue carrying what history fails to record.
-        </p>
-        <p>He lives in Philadelphia.</p>
+        
         <p className="italic text-[rgba(199,168,106,0.92)] pt-1">
           The rest is in the archive.
         </p>
