@@ -1,5 +1,8 @@
 /* HomePage sections, extracted so HomePage.js becomes a thin orchestrator.
- * No behavioural changes from before — pure decomposition. */
+ * All visible copy reads through `t(key, fallback)` so it can be edited from
+ * the admin Pages section. Fallback strings remain the design source of
+ * truth and render when no DB override exists.
+ */
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -14,36 +17,41 @@ export const FADE_UP = {
 export const FADE_UP_TITLE = { ...FADE_UP, initial: { opacity: 0, y: 16 } };
 export const EASE = [0.22, 1, 0.36, 1];
 
-export const PORTALS = [
-  { to: "/archive", label: "The Archive", line: "Four rooms. Four atmospheres.", testid: THRESHOLD.portal_archive, Glyph: CrescentGlyph },
-  { to: "/library", label: "The Library", line: "Recovered documents. Quiet, sacred.", testid: THRESHOLD.portal_library, Glyph: ThresholdGlyph },
-  { to: "/observatory", label: "The Observatory", line: "Artifacts from another sky.", testid: THRESHOLD.portal_observatory, Glyph: EyeGlyph },
+// Destinations stay hardcoded; only labels are editable.
+const PORTAL_DEFS = [
+  { to: "/archive",     keyLabel: "portal_archive_label",     defaultLabel: "The Archive",     keyLine: "portal_archive_line",     defaultLine: "Four rooms. Four atmospheres.",  testid: THRESHOLD.portal_archive,     Glyph: CrescentGlyph },
+  { to: "/library",     keyLabel: "portal_library_label",     defaultLabel: "The Library",     keyLine: "portal_library_line",     defaultLine: "Recovered documents. Quiet, sacred.", testid: THRESHOLD.portal_library,     Glyph: ThresholdGlyph },
+  { to: "/observatory", keyLabel: "portal_observatory_label", defaultLabel: "The Observatory", keyLine: "portal_observatory_line", defaultLine: "Artifacts from another sky.",    testid: THRESHOLD.portal_observatory, Glyph: EyeGlyph },
 ];
 
 const HERO_BG =
   "url('https://images.unsplash.com/photo-1605571925268-bd3129e7df97?crop=entropy&cs=srgb&fm=jpg&q=85&w=2400')";
 
-export function ThresholdBio() {
+const noop = (_k, fb) => fb;
+
+export function ThresholdBio({ t = noop }) {
+  const bioText = t(
+    "bio",
+    "Neo Brightwell is an American singer-songwriter, outlaw poet, producer, and originator of Moonshine Disco.\n\nHe writes from the borderlands between memory and myth, building songs, poems, records, and artifacts that inhabit a shared universe known as the Neoverse.\n\nHis work is concerned with witness, survival, inheritance, and the strange ways people continue carrying what history fails to record.\n\nHe lives in Philadelphia."
+  );
+  const paragraphs = String(bioText).split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+  const kicker = t("bio_kicker", "The rest is in the archive.");
+
   return (
     <section className="mx-auto max-w-[720px] px-4 sm:px-6 mt-20 sm:mt-28">
       <div className="space-y-5 font-serif text-[rgba(231,224,214,0.88)] text-lg sm:text-xl leading-[1.75]">
-        <p>
-          Neo Brightwell is an American singer-songwriter, queer outlaw poet, producer,
-          and originator of Moonshine Disco.
-        </p>
-        <p>
-          Songs, poems, records, and recovered documents from the borderlands between memory and myth.
-        </p>
-        
-        <p className="italic text-[rgba(199,168,106,0.92)] pt-1">
-          The rest is in the archive.
-        </p>
+        {paragraphs.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+        {kicker && (
+          <p className="italic text-[rgba(199,168,106,0.92)] pt-1">{kicker}</p>
+        )}
       </div>
     </section>
   );
 }
 
-export function ThresholdHero() {
+export function ThresholdHero({ t = noop }) {
   return (
     <section className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-10 sm:pt-14 lg:pt-20">
       <div
@@ -58,23 +66,27 @@ export function ThresholdHero() {
           <motion.div {...FADE_UP} transition={{ duration: 1.4, ease: EASE }} className="flex items-center gap-3 text-[rgba(199,168,106,0.95)]">
             <CrescentGlyph size={26} />
             <span className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.75)]">
-              Moonshine Disco — outlaw soul for people who survived
+              {t("hero_eyebrow", "Moonshine Disco — outlaw soul for people who survived")}
             </span>
           </motion.div>
           <motion.h1 {...FADE_UP_TITLE} transition={{ duration: 1.4, delay: 0.15, ease: EASE }} className="font-serif text-[clamp(2.6rem,7vw,5.2rem)] leading-[0.98] text-[rgba(231,224,214,0.98)] tracking-[-0.015em] max-w-[18ch]">
-            I hope you remember
-            <span className="block italic text-[rgba(199,168,106,0.92)]">yourself tonight.</span>
+            {t("hero_headline_primary", "I hope you remember")}
+            <span className="block italic text-[rgba(199,168,106,0.92)]">
+              {t("hero_headline_secondary", "yourself tonight.")}
+            </span>
           </motion.h1>
           <motion.p {...FADE_UP} transition={{ duration: 1.4, delay: 0.35, ease: EASE }} className="font-serif italic text-[rgba(231,224,214,0.78)] text-lg sm:text-xl max-w-[58ch] leading-relaxed">
-            You’ve crossed a threshold. Inside: music, letters that were never mailed, a distant radio
-            transmission, and an archive built for people who survived impossible things.
+            {t(
+              "hero_subtext",
+              "You’ve crossed a threshold. Inside: music, letters that were never mailed, a distant radio transmission, and an archive built for people who survived impossible things."
+            )}
           </motion.p>
           <motion.div {...FADE_UP} transition={{ duration: 1.4, delay: 0.5, ease: EASE }} className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
             <Link to="/archive" data-testid={THRESHOLD.cta_enter_archive} className="inline-flex items-center justify-center gap-2 rounded-md bg-[rgba(199,168,106,0.95)] px-5 py-3 font-mono tracking-archival text-[11px] text-[#0B0C0F] hover:bg-[rgba(199,168,106,1)] transition-colors">
-              Enter The Archive <span aria-hidden>→</span>
+              {t("hero_cta_primary_label", "Enter The Archive")} <span aria-hidden>→</span>
             </Link>
             <Link to="/library" data-testid={THRESHOLD.cta_open_library} className="inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(199,194,184,0.32)] px-5 py-3 font-mono tracking-archival text-[11px] text-[rgba(231,224,214,0.92)] hover:bg-[rgba(231,224,214,0.04)] transition-colors">
-              Open The Library
+              {t("hero_cta_secondary_label", "Open The Library")}
             </Link>
           </motion.div>
         </div>
@@ -83,25 +95,29 @@ export function ThresholdHero() {
   );
 }
 
-export function PortalsSection() {
+export function PortalsSection({ t = noop }) {
   return (
     <section data-testid={THRESHOLD.portals} className="mx-auto max-w-[1180px] px-4 sm:px-6 mt-20 sm:mt-28">
       <div className="flex items-center gap-3 mb-6">
         <StarMark size={11} className="text-[rgba(199,168,106,0.8)]" />
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">
-          Three doors into the Neoverse
+          {t("portals_caption", "Three doors into the Neoverse")}
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {PORTALS.map(({ to, label, line, testid, Glyph }) => (
+        {PORTAL_DEFS.map(({ to, keyLabel, defaultLabel, keyLine, defaultLine, testid, Glyph }) => (
           <Link key={to} to={to} data-testid={testid} className="group relative overflow-hidden rounded-2xl border border-border/70 bg-[hsl(var(--card))] p-6 transition-transform duration-300 hover:-translate-y-0.5 hover:border-[rgba(199,168,106,0.45)]">
             <AtmosphereLayer grain dust />
             <div className="relative z-10">
               <span className="inline-flex text-[rgba(199,168,106,0.85)] group-hover:text-[rgba(199,168,106,1)] transition-colors mb-5">
                 <Glyph size={26} />
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl text-[rgba(231,224,214,0.95)]">{label}</h3>
-              <p className="mt-2 text-[rgba(231,224,214,0.7)] leading-relaxed">{line}</p>
+              <h3 className="font-serif text-2xl sm:text-3xl text-[rgba(231,224,214,0.95)]">
+                {t(keyLabel, defaultLabel)}
+              </h3>
+              <p className="mt-2 text-[rgba(231,224,214,0.7)] leading-relaxed">
+                {t(keyLine, defaultLine)}
+              </p>
               <p className="mt-6 font-mono tracking-archival text-[10px] text-[rgba(199,168,106,0.8)] group-hover:text-[rgba(199,168,106,1)] transition-colors">
                 cross over →
               </p>
@@ -113,17 +129,21 @@ export function PortalsSection() {
   );
 }
 
-export function AlbumsStrip({ albums }) {
+export function AlbumsStrip({ albums, t = noop }) {
   if (!albums?.length) return null;
   return (
     <section className="mx-auto max-w-[1180px] px-4 sm:px-6 mt-20">
       <div className="flex items-end justify-between mb-6 gap-4">
         <div>
-          <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">From The Archive</p>
-          <h2 className="font-serif text-3xl sm:text-4xl text-[rgba(231,224,214,0.95)] mt-1">Four rooms. One mythology.</h2>
+          <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">
+            {t("albums_strip_eyebrow", "From The Archive")}
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl text-[rgba(231,224,214,0.95)] mt-1">
+            {t("albums_strip_headline", "Four rooms. One mythology.")}
+          </h2>
         </div>
         <Link to="/archive" className="hidden sm:inline-flex font-mono tracking-archival text-[10.5px] text-[rgba(199,168,106,0.95)] hover:text-[rgba(199,168,106,1)]">
-          All rooms →
+          {t("albums_strip_link_label", "All rooms →")}
         </Link>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -157,17 +177,21 @@ function AlbumStripCard({ album, index }) {
   );
 }
 
-export function RoadhouseStrip({ posts }) {
+export function RoadhouseStrip({ posts, t = noop }) {
   if (!posts?.length) return null;
   return (
     <section className="mx-auto max-w-[1180px] px-4 sm:px-6 mt-20">
       <div className="flex items-end justify-between mb-6 gap-4">
         <div>
-          <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">The Roadhouse</p>
-          <h2 className="font-serif text-3xl text-[rgba(231,224,214,0.95)] mt-1">Latest dispatches</h2>
+          <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)]">
+            {t("roadhouse_strip_eyebrow", "The Roadhouse")}
+          </p>
+          <h2 className="font-serif text-3xl text-[rgba(231,224,214,0.95)] mt-1">
+            {t("roadhouse_strip_headline", "Latest dispatches")}
+          </h2>
         </div>
         <Link to="/roadhouse" className="font-mono tracking-archival text-[10.5px] text-[rgba(199,168,106,0.95)]">
-          The bulletin board →
+          {t("roadhouse_strip_link_label", "The bulletin board →")}
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

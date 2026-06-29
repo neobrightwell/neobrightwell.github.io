@@ -1,22 +1,30 @@
 [
   {
-    "content": "Backend: add `origin` field to VisualArtIn model",
+    "content": "Backend: add PageContent model + GET/PUT routes (slug-keyed singletons)",
     "status": "completed"
   },
   {
-    "content": "Admin schema: add Origin field + relabel Year→Chronology on Observatory form",
+    "content": "Frontend api client: page-content fetch/save",
     "status": "completed"
   },
   {
-    "content": "Observatory public page: relabel YEAR→CHRONOLOGY, show Origin in modal",
+    "content": "Admin: new pageSchemas config + Pages list/edit views + nav link + routes",
     "status": "completed"
   },
   {
-    "content": "Symbols constellation: implement 3 groupings (Celestial/Wayfaring/Testimony), fix overlapping positions, scope hover lines to same-group only",
+    "content": "Public: usePageContent hook with t(key, fallback) helper",
     "status": "completed"
   },
   {
-    "content": "Verify with screenshots + esbuild",
+    "content": "Wire HomePageSections (hero, bio, portals, strips)",
+    "status": "completed"
+  },
+  {
+    "content": "Wire 6 section pages (Archive/Library/Symbols/Roadhouse/Observatory/Invocation)",
+    "status": "completed"
+  },
+  {
+    "content": "Test admin save + public page renders override correctly",
     "status": "completed"
   }
 ]

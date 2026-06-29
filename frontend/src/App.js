@@ -25,6 +25,8 @@ import AdminDashboard from "@/admin/AdminDashboard";
 import AdminContentList from "@/admin/AdminContentList";
 import AdminContentEdit from "@/admin/AdminContentEdit";
 import AdminSubscribers from "@/admin/AdminSubscribers";
+import AdminPagesList from "@/admin/AdminPagesList";
+import AdminPageEdit from "@/admin/AdminPageEdit";
 
 function App() {
   useEffect(() => {
@@ -63,9 +65,11 @@ function App() {
               }
             >
               <Route index element={<AdminDashboard />} />
+              <Route path="pages" element={<AdminPagesList />} />
+              <Route path="pages/:slug" element={<AdminPageEdit />} />
+              <Route path="subscribers" element={<AdminSubscribers />} />
               <Route path=":resource" element={<AdminContentList />} />
               <Route path=":resource/:id" element={<AdminContentEdit />} />
-              <Route path="subscribers" element={<AdminSubscribers />} />
             </Route>
 
             <Route path="/admin/*" element={<Navigate to="/admin" replace />} />

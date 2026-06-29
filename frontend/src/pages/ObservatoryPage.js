@@ -6,10 +6,12 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StarMark } from "@/components/neoverse/Glyphs";
+import { usePageContent } from "@/hooks/usePageContent";
 
 export default function ObservatoryPage() {
   const [art, setArt] = useState(null);
   const [active, setActive] = useState(null);
+  const t = usePageContent("observatory");
 
   useEffect(() => {
     fetchObservatory().then(setArt).catch(() => setArt([]));
@@ -19,14 +21,14 @@ export default function ObservatoryPage() {
     <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-20">
       <header className="mb-12 max-w-[64ch]">
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)] mb-2">
-          The Observatory
+          {t("eyebrow", "The Observatory")}
         </p>
         <h1 className="font-serif text-[clamp(2.4rem,5.2vw,4.2rem)] leading-[1.02] text-[rgba(231,224,214,0.95)]">
-          Artifacts from
-          <span className="block italic text-[rgba(199,168,106,0.92)]">another sky.</span>
+          {t("headline_primary", "Artifacts from")}
+          <span className="block italic text-[rgba(199,168,106,0.92)]">{t("headline_secondary", "another sky.")}</span>
         </h1>
         <p className="mt-5 font-serif italic text-lg sm:text-xl text-[rgba(231,224,214,0.78)] leading-relaxed">
-          Paintings, photographs, and visual projects — examined under quiet light.
+          {t("subtext", "Paintings, photographs, and visual projects — examined under quiet light.")}
         </p>
       </header>
 

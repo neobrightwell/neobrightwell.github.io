@@ -5,6 +5,7 @@ import { fetchRoadhouse } from "@/api/client";
 import { ROADHOUSE } from "@/constants/testIds";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePageContent } from "@/hooks/usePageContent";
 
 const TYPES = [
   { value: "all", label: "All" },
@@ -20,6 +21,7 @@ const rotations = [-0.6, 0.5, -0.3, 0.7, -0.8, 0.4, -0.5, 0.6];
 export default function RoadhousePage() {
   const [posts, setPosts] = useState(null);
   const [type, setType] = useState("all");
+  const t = usePageContent("roadhouse");
 
   useEffect(() => {
     fetchRoadhouse().then(setPosts).catch(() => setPosts([]));
@@ -34,16 +36,16 @@ export default function RoadhousePage() {
     <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-20">
       <header className="mb-10 max-w-[60ch]">
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)] mb-2">
-          The Roadhouse
+          {t("eyebrow", "The Roadhouse")}
         </p>
         <h1 className="font-serif text-[clamp(2.4rem,5.2vw,4.2rem)] leading-[1.02] text-[rgba(231,224,214,0.95)]">
-          A bulletin board.
+          {t("headline_primary", "A bulletin board.")}
           <span className="block italic text-[rgba(199,168,106,0.92)]">
-            A desert dance hall.
+            {t("headline_secondary", "A desert dance hall.")}
           </span>
         </h1>
         <p className="mt-5 font-serif italic text-lg sm:text-xl text-[rgba(231,224,214,0.78)] leading-relaxed">
-          Shows, releases, news, and press — pinned to the wall by hand.
+          {t("subtext", "Shows, releases, news, and press — pinned to the wall by hand.")}
         </p>
       </header>
 

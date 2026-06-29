@@ -6,6 +6,7 @@ import { CrescentGlyph } from "@/components/neoverse/Glyphs";
 
 const NAV = [
   { to: "/admin", end: true, label: "Dashboard" },
+  { to: "/admin/pages", label: "Pages", testid: "admin-nav-pages" },
   { to: "/admin/albums", label: "Albums", testid: ADMIN.nav_albums },
   { to: "/admin/library", label: "Library", testid: ADMIN.nav_library },
   { to: "/admin/symbols", label: "Symbols", testid: ADMIN.nav_symbols },

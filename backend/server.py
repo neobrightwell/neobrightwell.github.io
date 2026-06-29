@@ -36,6 +36,8 @@ from models import (
     InvocationCreate,
     LibraryEntry,
     LibraryEntryIn,
+    PageContent,
+    PageContentIn,
     RoadhousePost,
     RoadhousePostIn,
     Subscriber,
@@ -391,6 +393,50 @@ async def list_subscribers(admin: dict = Depends(require_admin)):
 
 
 # ============================================================
+# Page-level editable copy
+# ============================================================
+ALLOWED_PAGE_SLUGS = {
+    "home", "archive", "library", "symbols", "roadhouse",
+    "observatory", "invocation",
+}
+
+
+@api_router.get("/pages/{slug}")
+async def get_page_content(slug: str):
+    """Public endpoint. Returns `{slug, fields}` or `{slug, fields: {}}` when
+    the page hasn't been customized yet — the frontend falls back to its
+    hardcoded copy in that case."""
+    if slug not in ALLOWED_PAGE_SLUGS:
+        raise HTTPException(status_code=404, detail="Unknown page")
+    doc = await db.page_content.find_one({"slug": slug}, {"_id": 0})
+    if not doc:
+        return {"slug": slug, "fields": {}}
+    return serialize_doc(doc)
+
+
+@api_router.put("/admin/pages/{slug}", response_model=PageContent)
+async def put_page_content(
+    slug: str,
+    payload: PageContentIn,
+    admin: dict = Depends(require_admin),
+):
+    if slug not in ALLOWED_PAGE_SLUGS:
+        raise HTTPException(status_code=404, detail="Unknown page")
+    existing = await db.page_content.find_one({"slug": slug}, {"_id": 0})
+    if existing:
+        merged = {
+            **existing,
+            "fields": payload.fields or {},
+            "updated_at": now_iso(),
+        }
+        await db.page_content.replace_one({"slug": slug}, merged)
+        return PageContent(**merged)
+    new_doc = PageContent(slug=slug, fields=payload.fields or {})
+    await db.page_content.insert_one(new_doc.model_dump())
+    return new_doc
+
+
+# ============================================================
 # Wire up
 # ============================================================
 app.include_router(api_router)
@@ -413,6 +459,7 @@ async def startup():
         await db.symbols.create_index("slug", unique=True)
         await db.roadhouse.create_index("slug", unique=True)
         await db.observatory.create_index("slug", unique=True)
+        await db.page_content.create_index("slug", unique=True)
         logger.info("Neoverse indexes ensured.")
     except Exception as exc:  # pragma: no cover
         logger.warning("Could not ensure indexes: %s", exc)

@@ -4,9 +4,11 @@ import { ARCHIVE } from "@/constants/testIds";
 import { ArchiveDoor } from "@/components/neoverse/ArchiveDoor";
 import { fetchAlbums } from "@/api/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePageContent } from "@/hooks/usePageContent";
 
 export default function ArchivePage() {
   const [albums, setAlbums] = useState(null);
+  const t = usePageContent("archive");
 
   useEffect(() => {
     fetchAlbums().then(setAlbums).catch(() => setAlbums([]));
@@ -16,17 +18,16 @@ export default function ArchivePage() {
     <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-14">
       <header className="mb-12 sm:mb-16 max-w-[60ch]">
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)] mb-2">
-          The Archive
+          {t("eyebrow", "The Archive")}
         </p>
         <h1 className="font-serif text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.02] text-[rgba(231,224,214,0.95)]">
-          Four rooms.
+          {t("headline_primary", "Four rooms.")}
           <span className="block italic text-[rgba(199,168,106,0.92)]">
-            One mythology.
+            {t("headline_secondary", "One mythology.")}
           </span>
         </h1>
         <p className="mt-5 font-serif italic text-lg sm:text-xl text-[rgba(231,224,214,0.78)] leading-relaxed">
-          Each album is its own room. Cross the threshold; the air changes.
-          Move slowly — the archive rewards attention.
+          {t("subtext", "Each album is its own room. Cross the threshold; the air changes. Move slowly — the archive rewards attention.")}
         </p>
       </header>
 

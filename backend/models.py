@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import List, Optional, Literal
+from typing import Any, Dict, List, Optional, Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -188,6 +188,24 @@ class Subscriber(NeoverseBase):
     provider: str = "database"  # adapter name; future: "resend" / "mailchimp" / "convertkit"
     provider_status: Optional[str] = None
     created_at: str = Field(default_factory=now_iso)
+
+
+# ---------- Page-level editable copy ----------
+# One document per page slug (e.g. "home", "archive", "library", ...).
+# `fields` is a free-form key/value bag of editable strings — the admin form
+# defines what keys exist for each page, and the public pages render
+# `fields[key] || hardcoded_default`. This keeps the schema flexible while
+# preserving graceful fallback to the in-code copy.
+class PageContentIn(NeoverseBase):
+    fields: Dict[str, Any] = Field(default_factory=dict)
+
+
+class PageContent(NeoverseBase):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    slug: str
+    fields: Dict[str, Any] = Field(default_factory=dict)
+    created_at: str = Field(default_factory=now_iso)
+    updated_at: str = Field(default_factory=now_iso)
 
 
 # ---------- Auth ----------

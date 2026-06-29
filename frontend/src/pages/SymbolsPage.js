@@ -6,6 +6,7 @@ import { SYMBOLS } from "@/constants/testIds";
 import { AtmosphereLayer } from "@/components/neoverse/AtmosphereLayer";
 import { CrescentGlyph, EyeGlyph, ThresholdGlyph, StarMark } from "@/components/neoverse/Glyphs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePageContent } from "@/hooks/usePageContent";
 
 // ---------------------------------------------------------------------
 //  Default constellation groupings (FALLBACK ONLY).
@@ -54,6 +55,7 @@ const edgeKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 export default function SymbolsPage() {
   const [symbols, setSymbols] = useState(null);
   const [hovered, setHovered] = useState(null);
+  const t = usePageContent("symbols");
 
   useEffect(() => {
     fetchSymbols().then(setSymbols).catch(() => setSymbols([]));
@@ -168,18 +170,16 @@ export default function SymbolsPage() {
     <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-20">
       <header className="mb-12 max-w-[64ch]">
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)] mb-2">
-          The Symbols
+          {t("eyebrow", "The Symbols")}
         </p>
         <h1 className="font-serif text-[clamp(2.4rem,5.2vw,4.2rem)] leading-[1.02] text-[rgba(231,224,214,0.95)]">
-          A living mythology.
+          {t("headline_primary", "A living mythology.")}
           <span className="block italic text-[rgba(199,168,106,0.92)]">
-            Decoded in fragments.
+            {t("headline_secondary", "Decoded in fragments.")}
           </span>
         </h1>
         <p className="mt-5 font-serif italic text-lg sm:text-xl text-[rgba(231,224,214,0.78)] leading-relaxed">
-          Sélune. The crescent and star. The eye. The liminality glyph. Recurring
-          shapes that speak across the work — remembrance, survival, transformation,
-          return, truth, witness.
+          {t("subtext", "Sélune. The crescent and star. The eye. The liminality glyph. Recurring shapes that speak across the work — remembrance, survival, transformation, return, truth, witness.")}
         </p>
       </header>
 
@@ -285,7 +285,7 @@ export default function SymbolsPage() {
         <div className="absolute left-5 bottom-5 flex items-center gap-2 text-[rgba(199,194,184,0.55)]">
           <StarMark size={10} />
           <p className="font-mono tracking-archival text-[10px]">
-            Hover a symbol to draw its constellation.
+            {t("constellation_caption", "Hover a symbol to draw its constellation.")}
           </p>
         </div>
       </section>

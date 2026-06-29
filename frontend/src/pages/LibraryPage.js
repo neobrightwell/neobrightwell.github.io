@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ThresholdGlyph } from "@/components/neoverse/Glyphs";
+import { usePageContent } from "@/hooks/usePageContent";
 
 const TYPES = [
   { value: "all", label: "All" },
@@ -20,6 +21,7 @@ export default function LibraryPage() {
   const [items, setItems] = useState(null);
   const [search, setSearch] = useState("");
   const [type, setType] = useState("all");
+  const t = usePageContent("library");
 
   useEffect(() => {
     fetchLibrary().then(setItems).catch(() => setItems([]));
@@ -43,15 +45,14 @@ export default function LibraryPage() {
     <div data-testid={LIBRARY.index} className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-14 sm:pt-20 pb-14">
       <header className="mb-12 max-w-[60ch]">
         <p className="font-mono tracking-archival text-[10.5px] text-[rgba(199,194,184,0.6)] mb-2">
-          The Library
+          {t("eyebrow", "The Library")}
         </p>
         <h1 className="font-serif text-[clamp(2.4rem,5.2vw,4.2rem)] leading-[1.02] text-[rgba(231,224,214,0.95)]">
-          Recovered documents.
-          <span className="block italic text-[rgba(199,168,106,0.92)]">A quiet reading room.</span>
+          {t("headline_primary", "Recovered documents.")}
+          <span className="block italic text-[rgba(199,168,106,0.92)]">{t("headline_secondary", "A quiet reading room.")}</span>
         </h1>
         <p className="mt-5 font-serif italic text-lg sm:text-xl text-[rgba(231,224,214,0.78)] leading-relaxed">
-          Poems, essays, manuscripts. Take your time — these are documents that
-          ask to be sat with.
+          {t("subtext", "Poems, essays, manuscripts. Take your time — these are documents that ask to be sat with.")}
         </p>
       </header>
 

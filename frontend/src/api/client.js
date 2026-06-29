@@ -73,3 +73,9 @@ export const adminLibrary = adminCrud("library");
 export const adminSymbols = adminCrud("symbols");
 export const adminRoadhouse = adminCrud("roadhouse");
 export const adminObservatory = adminCrud("observatory");
+
+// ---- Page-level editable copy ----
+export const fetchPageContent = (slug) =>
+  api.get(`/pages/${slug}`).then((r) => r.data);
+export const adminSavePage = (slug, fields) =>
+  api.put(`/admin/pages/${slug}`, { fields }).then((r) => r.data);
