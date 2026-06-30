@@ -73,6 +73,8 @@ export const adminLibrary = adminCrud("library");
 export const adminSymbols = adminCrud("symbols");
 export const adminRoadhouse = adminCrud("roadhouse");
 export const adminObservatory = adminCrud("observatory");
+export const adminObservatoryReorder = (ids) =>
+  api.post("/admin/observatory/reorder", { ids }).then((r) => r.data);
 
 // ---- Page-level editable copy ----
 export const fetchPageContent = (slug) =>

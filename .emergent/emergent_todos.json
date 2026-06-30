@@ -1,30 +1,18 @@
 [
   {
-    "content": "Backend: add PageContent model + GET/PUT routes (slug-keyed singletons)",
+    "content": "Backend: add POST /api/admin/observatory/reorder taking ordered list of ids",
     "status": "completed"
   },
   {
-    "content": "Frontend api client: page-content fetch/save",
+    "content": "Frontend api: adminObservatoryReorder helper",
     "status": "completed"
   },
   {
-    "content": "Admin: new pageSchemas config + Pages list/edit views + nav link + routes",
+    "content": "Frontend admin list: up/down buttons for observatory rows + optimistic swap + persist",
     "status": "completed"
   },
   {
-    "content": "Public: usePageContent hook with t(key, fallback) helper",
-    "status": "completed"
-  },
-  {
-    "content": "Wire HomePageSections (hero, bio, portals, strips)",
-    "status": "completed"
-  },
-  {
-    "content": "Wire 6 section pages (Archive/Library/Symbols/Roadhouse/Observatory/Invocation)",
-    "status": "completed"
-  },
-  {
-    "content": "Test admin save + public page renders override correctly",
+    "content": "Verify visually + end-to-end",
     "status": "completed"
   }
 ]

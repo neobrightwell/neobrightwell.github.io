@@ -347,6 +347,31 @@ async def delete_visual_art(art_id: str, admin: dict = Depends(require_admin)):
     return {"deleted": True}
 
 
+class ReorderPayload(BaseModel):
+    ids: list[str]
+
+
+@api_router.post("/admin/observatory/reorder")
+async def reorder_observatory(payload: ReorderPayload, admin: dict = Depends(require_admin)):
+    """Reassigns `sort_order` on observatory documents to match the order of
+    `ids` in the request. Missing or unknown ids are ignored. The public
+    listing already sorts by `sort_order` ASC, so the new order takes effect
+    on next page load."""
+    seen_ids = set()
+    ops_done = 0
+    for index, art_id in enumerate(payload.ids):
+        if not art_id or art_id in seen_ids:
+            continue
+        seen_ids.add(art_id)
+        res = await db.observatory.update_one(
+            {"id": art_id},
+            {"$set": {"sort_order": index, "updated_at": now_iso()}},
+        )
+        if res.matched_count:
+            ops_done += 1
+    return {"ok": True, "updated": ops_done}
+
+
 # ============================================================
 # Invocation (email signup)
 # ============================================================
