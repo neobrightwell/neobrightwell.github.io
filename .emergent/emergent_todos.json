@@ -1,18 +1,18 @@
 [
   {
-    "content": "Backend: add POST /api/admin/observatory/reorder taking ordered list of ids",
+    "content": "Backend: GET /api/admin/export (content) + GET /api/admin/export/subscribers.csv + POST /api/admin/import",
     "status": "completed"
   },
   {
-    "content": "Frontend api: adminObservatoryReorder helper",
+    "content": "Frontend api: exportBackup, importBackup, downloadSubscribersCsv helpers",
     "status": "completed"
   },
   {
-    "content": "Frontend admin list: up/down buttons for observatory rows + optimistic swap + persist",
+    "content": "Admin: new AdminBackupPage with download + upload/restore + subscribers CSV button + nav link + route",
     "status": "completed"
   },
   {
-    "content": "Verify visually + end-to-end",
+    "content": "Test round-trip end-to-end (export, mutate, import, verify)",
     "status": "completed"
   }
 ]

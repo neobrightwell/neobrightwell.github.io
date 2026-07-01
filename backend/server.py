@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from dotenv import load_dotenv
 
@@ -459,6 +459,117 @@ async def put_page_content(
     new_doc = PageContent(slug=slug, fields=payload.fields or {})
     await db.page_content.insert_one(new_doc.model_dump())
     return new_doc
+
+
+# ============================================================
+# Backup / restore
+# ============================================================
+# Content collections that participate in the JSON backup. Order matters
+# only for reporting — imports are keyed by slug (which is unique per
+# collection) so order doesn't affect correctness.
+BACKUP_COLLECTIONS = [
+    "albums",
+    "library",
+    "symbols",
+    "roadhouse",
+    "observatory",
+    "page_content",
+]
+
+
+@api_router.get("/admin/export")
+async def export_backup(admin: dict = Depends(require_admin)):
+    """Full content backup. Returns every document from the content
+    collections above as a single JSON payload. Excludes `subscribers`
+    (PII) — those have a dedicated CSV endpoint."""
+    out = {
+        "meta": {
+            "app": "the-neoverse",
+            "version": 1,
+            "generated_at": now_iso(),
+        },
+        "collections": {},
+    }
+    for name in BACKUP_COLLECTIONS:
+        coll = db[name]
+        docs = await coll.find({}, {"_id": 0}).to_list(10000)
+        out["collections"][name] = docs
+    return out
+
+
+@api_router.post("/admin/import")
+async def import_backup(payload: dict, admin: dict = Depends(require_admin)):
+    """Restore a previously-exported backup. Idempotent: upserts by `slug`
+    for each content collection. When a doc with the same slug exists in
+    the target DB, its `id` and `created_at` are preserved so foreign
+    references (if any) stay stable."""
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Payload must be a JSON object")
+    collections = payload.get("collections") or {}
+    if not isinstance(collections, dict):
+        raise HTTPException(status_code=400, detail="`collections` must be an object")
+
+    report: Dict[str, Dict[str, int]] = {}
+    for name in BACKUP_COLLECTIONS:
+        docs = collections.get(name) or []
+        if not isinstance(docs, list):
+            report[name] = {"error": "not a list", "inserted": 0, "updated": 0, "skipped": 0}
+            continue
+        inserted = updated = skipped = 0
+        coll = db[name]
+        for doc in docs:
+            if not isinstance(doc, dict) or not doc.get("slug"):
+                skipped += 1
+                continue
+            doc = {k: v for k, v in doc.items() if k != "_id"}
+            existing = await coll.find_one({"slug": doc["slug"]}, {"_id": 0})
+            if existing:
+                # Preserve production-side identity + creation timestamp
+                doc["id"] = existing.get("id", doc.get("id"))
+                doc["created_at"] = existing.get("created_at", doc.get("created_at"))
+                doc["updated_at"] = now_iso()
+                await coll.replace_one({"slug": doc["slug"]}, doc)
+                updated += 1
+            else:
+                doc.setdefault("id", str(uuid.uuid4()))
+                doc.setdefault("created_at", now_iso())
+                doc["updated_at"] = now_iso()
+                await coll.insert_one(doc)
+                inserted += 1
+        report[name] = {"inserted": inserted, "updated": updated, "skipped": skipped}
+    return {"ok": True, "report": report}
+
+
+@api_router.get("/admin/export/subscribers.csv")
+async def export_subscribers_csv(admin: dict = Depends(require_admin)):
+    """Subscribers as CSV. Separated from the general backup so PII export
+    is always an explicit action."""
+    docs = await db.subscribers.find({}, {"_id": 0}).sort([("created_at", 1)]).to_list(50000)
+    header = "email,first_name,source,confirmed,provider,provider_status,created_at\n"
+    rows = []
+    for d in docs:
+        def esc(v):
+            if v is None:
+                return ""
+            s = str(v).replace('"', '""')
+            return f'"{s}"' if ("," in s or '"' in s or "\n" in s) else s
+        rows.append(",".join([
+            esc(d.get("email")),
+            esc(d.get("first_name")),
+            esc(d.get("source")),
+            esc(d.get("confirmed")),
+            esc(d.get("provider")),
+            esc(d.get("provider_status")),
+            esc(d.get("created_at")),
+        ]))
+    body = header + "\n".join(rows) + ("\n" if rows else "")
+    filename = f"neoverse-subscribers-{now_iso()[:10]}.csv"
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(
+        content=body,
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 # ============================================================

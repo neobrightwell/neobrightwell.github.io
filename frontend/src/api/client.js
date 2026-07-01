@@ -81,3 +81,14 @@ export const fetchPageContent = (slug) =>
   api.get(`/pages/${slug}`).then((r) => r.data);
 export const adminSavePage = (slug, fields) =>
   api.put(`/admin/pages/${slug}`, { fields }).then((r) => r.data);
+
+// ---- Backup / restore ----
+export const adminExportBackup = () =>
+  api.get("/admin/export").then((r) => r.data);
+export const adminImportBackup = (payload) =>
+  api.post("/admin/import", payload).then((r) => r.data);
+// URL used for direct <a href> download of subscribers.csv (fetches with auth
+// header via getSubscribersCsvBlob below because the browser can't attach
+// custom headers to a normal link).
+export const getSubscribersCsvBlob = () =>
+  api.get("/admin/export/subscribers.csv", { responseType: "blob" }).then((r) => r.data);

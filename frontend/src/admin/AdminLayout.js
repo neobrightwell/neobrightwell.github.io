@@ -13,6 +13,7 @@ const NAV = [
   { to: "/admin/roadhouse", label: "Roadhouse", testid: ADMIN.nav_roadhouse },
   { to: "/admin/observatory", label: "Observatory", testid: ADMIN.nav_observatory },
   { to: "/admin/subscribers", label: "Subscribers", testid: ADMIN.nav_subscribers },
+  { to: "/admin/backup", label: "Backup", testid: "admin-nav-backup" },
 ];
 
 const linkClass = ({ isActive }) =>

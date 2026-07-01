@@ -27,6 +27,7 @@ import AdminContentEdit from "@/admin/AdminContentEdit";
 import AdminSubscribers from "@/admin/AdminSubscribers";
 import AdminPagesList from "@/admin/AdminPagesList";
 import AdminPageEdit from "@/admin/AdminPageEdit";
+import AdminBackupPage from "@/admin/AdminBackupPage";
 
 function App() {
   useEffect(() => {
@@ -68,6 +69,7 @@ function App() {
               <Route path="pages" element={<AdminPagesList />} />
               <Route path="pages/:slug" element={<AdminPageEdit />} />
               <Route path="subscribers" element={<AdminSubscribers />} />
+              <Route path="backup" element={<AdminBackupPage />} />
               <Route path=":resource" element={<AdminContentList />} />
               <Route path=":resource/:id" element={<AdminContentEdit />} />
             </Route>
